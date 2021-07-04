@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'home_page.dart';
+import 'features/todo/presentation/pages/home_page.dart';
 
 class App extends StatelessWidget {
   @override
