@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'features/todo/presentation/pages/home_page.dart';
+import 'package:to_do/routes.dart';
 
 class App extends StatelessWidget {
   @override
@@ -10,7 +9,7 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: HomePage(title: 'Flutter Demo Home Page'),
+      routes: routes,
     );
   }
 }

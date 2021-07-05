@@ -6,18 +6,30 @@ class TodoTask extends Equatable {
     required this.completed,
     required this.name,
     this.description,
-    this.icon,
   });
 
   final String id;
   final bool completed;
   final String name;
   final String? description;
-  final String? icon;
+
+  TodoTask copyWith({
+    String? id,
+    bool? completed,
+    String? name,
+    String? description,
+  }) {
+    return TodoTask(
+      id: id ?? this.id,
+      completed: completed ?? this.completed,
+      name: name ?? this.name,
+      description: description ?? this.description,
+    );
+  }
 
   @override
   bool? get stringify => true;
 
   @override
-  List<Object?> get props => [id, completed, name, description, icon];
+  List<Object?> get props => [id, completed, name, description];
 }

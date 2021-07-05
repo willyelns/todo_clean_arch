@@ -5,7 +5,19 @@ import 'package:to_do/features/todo/data/models/todo_task_model.dart';
 class TodoRemoteDataSourceImpl implements TodoRemoteDataSource {
   @override
   Future<List<TodoTaskModel>> retrieveAllTasks() async {
-    Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
+    throw ServerException();
+  }
+
+  @override
+  Future<void> updateTask(TodoTaskModel taskModel) async {
+    await Future.delayed(Duration(seconds: 1));
+    throw ServerException();
+  }
+
+  @override
+  Future<void> deleteTask(TodoTaskModel taskModel) async {
+    await Future.delayed(Duration(seconds: 1));
     throw ServerException();
   }
 }

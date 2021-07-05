@@ -13,7 +13,6 @@ class TodoTaskModel extends TodoTask with Decoder {
           completed: completed,
           name: name,
           description: description,
-          icon: icon,
         );
 
   factory TodoTaskModel.fromJson(Json json) => TodoTaskModel(
@@ -21,7 +20,13 @@ class TodoTaskModel extends TodoTask with Decoder {
         completed: json['completed'],
         name: json['name'],
         description: json['description'],
-        icon: json['icon'],
+      );
+
+  factory TodoTaskModel.fromEntity(TodoTask todoTask) => TodoTaskModel(
+        id: todoTask.id,
+        completed: todoTask.completed,
+        name: todoTask.name,
+        description: todoTask.description,
       );
 
   @override
@@ -31,7 +36,6 @@ class TodoTaskModel extends TodoTask with Decoder {
       'completed': completed,
       'name': name,
       'description': description,
-      'icon': icon,
     };
     return response;
   }

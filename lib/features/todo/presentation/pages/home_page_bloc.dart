@@ -4,16 +4,16 @@ import 'package:to_do/features/todo/domain/usecases/retrieve_all_tasks.dart';
 import 'package:to_do/features/todo/presentation/bloc/todo_bloc.dart';
 import 'package:to_do/injection_container.dart';
 
-class HomePage extends StatefulWidget {
-  HomePage({Key? key, required this.title}) : super(key: key);
+class HomePageBloc extends StatefulWidget {
+  HomePageBloc({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageBlocState createState() => _HomePageBlocState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageBlocState extends State<HomePageBloc> {
   final useCase = serviceLocator<RetrieveAllTasks>();
   final todoBloc = serviceLocator<TodoBloc>();
 
