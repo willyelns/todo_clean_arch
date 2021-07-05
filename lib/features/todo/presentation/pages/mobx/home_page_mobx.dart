@@ -101,22 +101,25 @@ class _LoadedStateWidget extends StatelessWidget {
         child: Text('No tasks'),
       ));
     }
-    return ListView.builder(
-      itemCount: todoTasks.length,
-      itemBuilder: (context, index) {
-        final todoTask = todoTasks[index];
-        return ListTile(
-          leading: Checkbox(
-            value: todoTask.completed,
-            onChanged: (value) {
-              final task = todoTask.copyWith(completed: value);
-              todoStore.updateTask(index, task);
-            },
-          ),
-          title: Text(todoTask.name),
-          onLongPress: () => _deleteItem(context, todoTask),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: todoStore.loadTodoTasks,
+      child: ListView.builder(
+        itemCount: todoTasks.length,
+        itemBuilder: (context, index) {
+          final todoTask = todoTasks[index];
+          return ListTile(
+            leading: Checkbox(
+              value: todoTask.completed,
+              onChanged: (value) {
+                final task = todoTask.copyWith(completed: value);
+                todoStore.updateTask(index, task);
+              },
+            ),
+            title: Text(todoTask.name),
+            onLongPress: () => _deleteItem(context, todoTask),
+          );
+        },
+      ),
     );
   }
 
