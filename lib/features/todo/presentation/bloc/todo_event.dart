@@ -44,7 +44,3 @@ class TodoDeleted extends TodoEvent {
   @override
   String toString() => 'TodoTask Deleted { todo: $todo }';
 }
-
-class ClearCompleted extends TodoEvent {}
-
-class ToggleAll extends TodoEvent {}

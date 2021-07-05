@@ -18,8 +18,6 @@ class _HomePageMobxState extends State<HomePageMobx> {
   late ReactionDisposer disposer;
 
   void _addTask() async {
-    // final task = TodoTask(id: '2', completed: false, name: 'Name');
-    // todoStore.addTodoTask(task);
     await Navigator.of(context).pushNamed('add_task_mobx');
   }
 
@@ -44,16 +42,18 @@ class _HomePageMobxState extends State<HomePageMobx> {
         builder: (context) {
           final state = todoStore.currentState;
           if (state == TodoState.initial) {
-            return Center(child: Text('Initial State'));
+            return _InitialStateWidget();
           }
           if (state == TodoState.loading) {
-            return Center(child: CircularProgressIndicator());
+            return _LoadingStateWidget();
           }
           if (state == TodoState.loaded || state == TodoState.deleted) {
-            return _buildloadedContainer(context);
+            return _LoadedStateWidget();
           }
           if (state == TodoState.error) {
-            return Center(child: Text('error State'));
+            return _ErrorStateWidget(
+              errorMessage: todoStore.errorMessage,
+            );
           }
           return Text('Not Recognized');
         },
@@ -66,30 +66,60 @@ class _HomePageMobxState extends State<HomePageMobx> {
     );
   }
 
-  Widget _buildloadedContainer(BuildContext context) {
-    final todoTaskList = todoStore.todoTasks;
-    if (todoTaskList.isEmpty) {
+  void _showDeletedSnackBar(BuildContext context) {
+    final snackBar = SnackBar(
+      content: Text('Task removed with success!'),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () {
+          // do something
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  @override
+  void dispose() {
+    disposer.reaction.dispose();
+    super.dispose();
+  }
+}
+
+class _LoadedStateWidget extends StatelessWidget {
+  final todoStore = serviceLocator<TodoStore>();
+
+  _LoadedStateWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final List<TodoTask> todoTasks = todoStore.todoTasks;
+
+    if (todoTasks.isEmpty) {
       return Center(
           child: Container(
-        child: Text('Sem tarefas'),
+        child: Text('No tasks'),
       ));
     }
-    return ListView.builder(
-      itemCount: todoTaskList.length,
-      itemBuilder: (context, index) {
-        final todoTask = todoTaskList[index];
-        return ListTile(
-          leading: Checkbox(
-            value: todoTask.completed,
-            onChanged: (value) {
-              final task = todoTask.copyWith(completed: value);
-              todoStore.updateTask(index, task);
-            },
-          ),
-          title: Text(todoTask.name),
-          onLongPress: () => _deleteItem(context, todoTask),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: todoStore.loadTodoTasks,
+      child: ListView.builder(
+        itemCount: todoTasks.length,
+        itemBuilder: (context, index) {
+          final todoTask = todoTasks[index];
+          return ListTile(
+            leading: Checkbox(
+              value: todoTask.completed,
+              onChanged: (value) {
+                final task = todoTask.copyWith(completed: value);
+                todoStore.updateTask(index, task);
+              },
+            ),
+            title: Text(todoTask.name),
+            onLongPress: () => _deleteItem(context, todoTask),
+          );
+        },
+      ),
     );
   }
 
@@ -117,23 +147,42 @@ class _HomePageMobxState extends State<HomePageMobx> {
       ),
     );
   }
+}
 
-  void _showDeletedSnackBar(BuildContext context) {
-    final snackBar = SnackBar(
-      content: Text('Task removed with success!'),
-      action: SnackBarAction(
-        label: 'OK',
-        onPressed: () {
-          // Código para desfazer a ação!
-        },
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+class _ErrorStateWidget extends StatelessWidget {
+  final String errorMessage;
+
+  const _ErrorStateWidget({
+    required this.errorMessage,
+    Key? key,
+  }) : super(key: key);
 
   @override
-  void dispose() {
-    disposer.reaction.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(errorMessage),
+    );
+  }
+}
+
+class _LoadingStateWidget extends StatelessWidget {
+  const _LoadingStateWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: CircularProgressIndicator());
+  }
+}
+
+class _InitialStateWidget extends StatelessWidget {
+  const _InitialStateWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text('Initial State'));
   }
 }
