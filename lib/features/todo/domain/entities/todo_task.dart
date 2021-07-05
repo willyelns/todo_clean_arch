@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:to_do/commons/mixins/copyable.dart';
 
-class TodoTask extends Equatable {
+class TodoTask extends Equatable with Copyable {
   const TodoTask({
     required this.id,
     required this.completed,

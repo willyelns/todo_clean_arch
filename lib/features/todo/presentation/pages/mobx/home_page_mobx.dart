@@ -28,7 +28,6 @@ class _HomePageMobxState extends State<HomePageMobx> {
     super.initState();
     todoStore.loadTodoTasks();
     print('list: ${todoStore.todoTasks}');
-    print('task: ${todoStore.todoTask}');
 
     disposer = reaction((_) => todoStore.todoState, (state) {
       if (state == TodoState.deleted) _showDeletedSnackBar(context);

@@ -29,11 +29,14 @@ abstract class _TodoStoreBase with Store {
   List<TodoTask> todoTasks = [];
   @observable
   TodoState todoState = TodoState.initial;
-  @observable
-  TodoTask? todoTask;
 
   @computed
-  get currentState => todoState;
+  TodoState get currentState => todoState;
+
+  @computed
+  String get errorMessage => todoState == TodoState.error
+      ? 'This could not be completed, be try again later'
+      : '';
 
   // Action methods
   @action
