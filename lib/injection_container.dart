@@ -11,6 +11,7 @@ import 'features/todo/domain/usecases/delete_todo_task.dart';
 import 'features/todo/domain/usecases/retrieve_all_tasks.dart';
 import 'features/todo/local/datasources/todo_local_datasource.dart';
 import 'features/todo/presentation/bloc/todo_bloc.dart';
+import 'features/todo/presentation/getx/controllers/todo_controller.dart';
 import 'features/todo/remote/datasources/todo_remote_data_source_impl.dart';
 
 final serviceLocator = GetIt.instance;
@@ -68,6 +69,13 @@ void init() {
       retrieveAllTasks: serviceLocator(),
       updateTodoTask: serviceLocator(),
       deleteTodoTask: serviceLocator(),
+    ),
+  );
+  serviceLocator.registerLazySingleton<TodoController>(
+    () => TodoController(
+      retrieveAllTasks: serviceLocator<RetrieveAllTasks>(),
+      deleteTodoTask: serviceLocator<DeleteTodoTask>(),
+      updateTodoTask: serviceLocator<UpdateTodoTask>(),
     ),
   );
 }
