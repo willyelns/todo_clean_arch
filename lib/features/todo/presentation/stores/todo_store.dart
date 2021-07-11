@@ -3,10 +3,9 @@ import 'package:to_do/features/todo/domain/entities/todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/delete_todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/retrieve_all_tasks.dart';
 import 'package:to_do/features/todo/domain/usecases/update_todo_task.dart';
+import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
 
 part 'todo_store.g.dart';
-
-enum TodoState { initial, loading, loaded, error, deleted }
 
 class TodoStore = _TodoStoreBase with _$TodoStore;
 

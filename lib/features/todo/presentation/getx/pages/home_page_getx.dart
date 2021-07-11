@@ -1,47 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
+import 'package:get/get.dart';
 import 'package:to_do/features/todo/domain/entities/todo_task.dart';
+import 'package:to_do/features/todo/presentation/getx/controllers/todo_controller.dart';
 import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
 import 'package:to_do/features/todo/presentation/stores/todo_store.dart';
 import 'package:to_do/injection_container.dart';
 
-class HomePageMobx extends StatefulWidget {
-  HomePageMobx({Key? key}) : super(key: key);
+class HomePageGetx extends StatelessWidget {
+  HomePageGetx({Key? key}) : super(key: key);
 
-  @override
-  _HomePageMobxState createState() => _HomePageMobxState();
-}
-
-class _HomePageMobxState extends State<HomePageMobx> {
-  final todoStore = serviceLocator<TodoStore>();
-
-  late ReactionDisposer disposer;
+  final todoController = Get.find<TodoController>();
 
   void _addTask() async {
-    await Navigator.of(context).pushNamed('add_task_mobx');
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    todoStore.loadTodoTasks();
-    print('list: ${todoStore.todoTasks}');
-
-    disposer = reaction((_) => todoStore.todoState, (state) {
-      if (state == TodoState.deleted) _showDeletedSnackBar(context);
-    });
+    todoController.retrieveAllTasks();
+    print('list: ${todoController.todoTasks}');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("To do list with - MobX"),
+        title: Text("To do list with - GetX"),
       ),
-      body: Observer(
-        builder: (context) {
-          final state = todoStore.currentState;
+      body: GetX<TodoController>(
+        initState: (state) {
+          Get.find<TodoController>().retrieveAllTasks();
+        },
+        builder: (controller) {
+          final state = controller.todoState;
+          print(controller.todoState);
           if (state == TodoState.initial) {
             return _InitialStateWidget();
           }
@@ -53,7 +40,7 @@ class _HomePageMobxState extends State<HomePageMobx> {
           }
           if (state == TodoState.error) {
             return _ErrorStateWidget(
-              errorMessage: todoStore.errorMessage,
+              errorMessage: controller.errorMessage,
             );
           }
           return Text('Not Recognized');
@@ -78,12 +65,6 @@ class _HomePageMobxState extends State<HomePageMobx> {
       ),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  @override
-  void dispose() {
-    disposer.reaction.dispose();
-    super.dispose();
   }
 }
 
