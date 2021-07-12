@@ -16,7 +16,7 @@ class HomePageMobx extends StatefulWidget {
 class _HomePageMobxState extends State<HomePageMobx> {
   final todoStore = serviceLocator<TodoStore>();
 
-  late ReactionDisposer disposer;
+  List<ReactionDisposer> disposers = [];
 
   void _addTask() async {
     await Navigator.of(context).pushNamed('add_task_mobx');
@@ -28,9 +28,13 @@ class _HomePageMobxState extends State<HomePageMobx> {
     todoStore.retrieveAllTasks();
     print('list: ${todoStore.todoTasks}');
 
-    disposer = reaction((_) => todoStore.todoState, (state) {
+    disposers.add(reaction((_) => todoStore.todoState, (state) {
       if (state == TodoState.deleted) _showDeletedSnackBar(context);
-    });
+    }));
+
+    disposers.add(reaction((_) => todoStore.todoState, (state) {
+      if (state == TodoState.added) todoStore.todoState = TodoState.loaded;
+    }, delay: 500));
   }
 
   @override
@@ -82,7 +86,9 @@ class _HomePageMobxState extends State<HomePageMobx> {
 
   @override
   void dispose() {
-    disposer.reaction.dispose();
+    disposers.forEach((element) {
+      element.reaction.dispose();
+    });
     super.dispose();
   }
 }

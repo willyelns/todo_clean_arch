@@ -88,6 +88,38 @@ class TodoRepositoryImpl implements TodoRepository {
     return _deleteLocalTask(todoTask);
   }
 
+  @override
+  Future<Either<void, Failure>> addTodoTask(TodoTask todoTask) async {
+    if (await networkInfo.isConnected) {
+      return _addRemoteTask(todoTask);
+    }
+    return _addLocalTask(todoTask);
+  }
+
+  Future<Either<void, Failure>> _addRemoteTask(TodoTask todoTask) async {
+    final model = TodoTaskModel.fromEntity(todoTask);
+    try {
+      final response = await remoteDataSource.addTask(model);
+      return Left(response);
+    } on ServerException {
+      return _addLocalTask(model);
+    } catch (e) {
+      return Right(const ServerFailure());
+    }
+  }
+
+  Future<Either<void, Failure>> _addLocalTask(TodoTask todoTask) async {
+    try {
+      final response =
+          await localDataSource.addTask(TodoTaskModel.fromEntity(todoTask));
+      return Left(response);
+    } on CacheException {
+      return Right(const CacheFailure());
+    } catch (e) {
+      return Right(const ConnectionFailure());
+    }
+  }
+
   Future<Either<void, Failure>> _deleteRemoteTask(TodoTask todoTask) async {
     final model = TodoTaskModel.fromEntity(todoTask);
     try {

@@ -8,6 +8,8 @@ import 'package:to_do/features/todo/domain/entities/todo_task.dart';
 import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
 import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
 
+import '../mocks/mock_add_todo_form_store.dart';
+import '../mocks/mock_add_todo_task.dart';
 import '../mocks/mocks.dart';
 
 void main() {
@@ -15,16 +17,22 @@ void main() {
   late MockRetrieveAllTasks mockRetrieveAllTasks;
   late MockDeleteTodoTask mockDeleteTodoTask;
   late MockUpdateTodoTask mockUpdateTodoTask;
+  late MockAddTodoFormStore mockAddTodoFormStore;
+  late MockAddTodoTask mockAddTodoTask;
 
   setUp(() {
     mockRetrieveAllTasks = MockRetrieveAllTasks();
     mockDeleteTodoTask = MockDeleteTodoTask();
     mockUpdateTodoTask = MockUpdateTodoTask();
+    mockAddTodoFormStore = MockAddTodoFormStore();
+    mockAddTodoTask = MockAddTodoTask();
 
     sut = TodoStore(
       deleteTodoTask: mockDeleteTodoTask,
       retrieveAllTasks: mockRetrieveAllTasks,
       updateTodoTask: mockUpdateTodoTask,
+      addTodoFormStore: mockAddTodoFormStore,
+      addTodoTask: mockAddTodoTask,
     );
   });
 

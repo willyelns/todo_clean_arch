@@ -4,12 +4,15 @@ import 'package:to_do/commons/services/network/network_info.dart';
 import 'package:to_do/features/todo/data/datasources/todo_data_source.dart';
 import 'package:to_do/features/todo/data/repositories/todo_repositories_impl.dart';
 import 'package:to_do/features/todo/domain/repositories/todo_repositoy.dart';
+import 'package:to_do/features/todo/domain/usecases/add_todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/delete_todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/retrieve_all_tasks.dart';
 import 'package:to_do/features/todo/domain/usecases/update_todo_task.dart';
 import 'package:to_do/features/todo/local/datasources/todo_local_datasource.dart';
 import 'package:to_do/features/todo/presentation/getx/controllers/todo_controller.dart';
 import 'package:to_do/features/todo/remote/datasources/todo_remote_data_source_impl.dart';
+import 'package:to_do/features/todo/remote/datasources/todo_retrofit_data_source.dart';
+import 'package:dio/dio.dart';
 
 class HomeBinding implements Bindings {
   @override
@@ -37,9 +40,22 @@ class HomeBinding implements Bindings {
         Get.find<TodoRepository>(),
       ),
     );
+    Get.lazyPut<AddTodoTask>(
+      () => AddTodoTaskImpl(
+        Get.find<TodoRepository>(),
+      ),
+    );
     //* Data
+    Get.lazyPut<Dio>(() => Dio());
+    Get.lazyPut<TodoRetrofitDataSource>(
+      () => TodoRetrofitDataSource(
+        Get.find<Dio>(),
+      ),
+    );
     Get.lazyPut<TodoRemoteDataSource>(
-      () => TodoRemoteDataSourceImpl(),
+      () => TodoRemoteDataSourceImpl(
+        todoRetrofitDataSource: Get.find<TodoRetrofitDataSource>(),
+      ),
     );
     Get.lazyPut<TodoLocalDataSource>(
       () => TodoLocalDataSourceImpl(),
