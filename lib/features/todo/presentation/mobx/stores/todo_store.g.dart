@@ -65,8 +65,8 @@ mixin _$TodoStore on _TodoStoreBase, Store {
   final _$addTodoTaskAsyncAction = AsyncAction('_TodoStoreBase.addTodoTask');
 
   @override
-  Future<void> addTodoTask(TodoTask task) {
-    return _$addTodoTaskAsyncAction.run(() => super.addTodoTask(task));
+  Future<void> addTodoTask() {
+    return _$addTodoTaskAsyncAction.run(() => super.addTodoTask());
   }
 
   final _$updateTodoTaskAsyncAction =

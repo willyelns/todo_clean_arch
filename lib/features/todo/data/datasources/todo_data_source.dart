@@ -4,6 +4,7 @@ abstract class TodoDataSource {
   Future<List<TodoTaskModel>> retrieveAllTasks();
   Future<void> updateTask(TodoTaskModel taskModel);
   Future<void> deleteTask(TodoTaskModel taskModel);
+  Future<void> addTask(TodoTaskModel taskModel);
 }
 
 abstract class TodoRemoteDataSource extends TodoDataSource {
@@ -13,6 +14,8 @@ abstract class TodoRemoteDataSource extends TodoDataSource {
   Future<void> updateTask(TodoTaskModel taskModel);
   @override
   Future<void> deleteTask(TodoTaskModel taskModel);
+  @override
+  Future<void> addTask(TodoTaskModel taskModel);
 }
 
 abstract class TodoLocalDataSource extends TodoDataSource {
@@ -22,4 +25,6 @@ abstract class TodoLocalDataSource extends TodoDataSource {
   Future<void> updateTask(TodoTaskModel taskModel);
   @override
   Future<void> deleteTask(TodoTaskModel taskModel);
+  @override
+  Future<void> addTask(TodoTaskModel taskModel);
 }

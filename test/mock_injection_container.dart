@@ -4,13 +4,17 @@ import 'package:to_do/commons/services/network/network_info.dart';
 import 'package:to_do/features/todo/data/datasources/todo_data_source.dart';
 import 'package:to_do/features/todo/data/repositories/todo_repositories_impl.dart';
 import 'package:to_do/features/todo/domain/repositories/todo_repositoy.dart';
+import 'package:to_do/features/todo/domain/usecases/add_todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/delete_todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/retrieve_all_tasks.dart';
 import 'package:to_do/features/todo/domain/usecases/update_todo_task.dart';
 import 'package:to_do/features/todo/local/datasources/todo_local_datasource.dart';
 import 'package:to_do/features/todo/presentation/bloc/todo_bloc.dart';
+import 'package:to_do/features/todo/presentation/mobx/stores/add_todo_form_store.dart';
 import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
 import 'package:to_do/features/todo/remote/datasources/todo_remote_data_source_impl.dart';
+import 'package:to_do/features/todo/remote/datasources/todo_retrofit_data_source.dart';
+import 'package:dio/dio.dart';
 
 final serviceLocator = GetIt.instance;
 
@@ -39,9 +43,22 @@ void init() {
       serviceLocator(),
     ),
   );
+  serviceLocator.registerLazySingleton<AddTodoTask>(
+    () => AddTodoTaskImpl(
+      serviceLocator(),
+    ),
+  );
   //* Data
+  serviceLocator.registerSingleton(() => Dio());
+  serviceLocator.registerLazySingleton<TodoRetrofitDataSource>(
+    () => TodoRetrofitDataSource(
+      serviceLocator(),
+    ),
+  );
   serviceLocator.registerLazySingleton<TodoRemoteDataSource>(
-    () => TodoRemoteDataSourceImpl(),
+    () => TodoRemoteDataSourceImpl(
+      todoRetrofitDataSource: serviceLocator(),
+    ),
   );
   serviceLocator.registerLazySingleton<TodoLocalDataSource>(
     () => TodoLocalDataSourceImpl(),
@@ -67,6 +84,12 @@ void init() {
       retrieveAllTasks: serviceLocator(),
       updateTodoTask: serviceLocator(),
       deleteTodoTask: serviceLocator(),
+      addTodoFormStore: serviceLocator(),
+      addTodoTask: serviceLocator(),
     ),
+  );
+
+  serviceLocator.registerLazySingleton<AddTodoFormStore>(
+    () => AddTodoFormStore(),
   );
 }

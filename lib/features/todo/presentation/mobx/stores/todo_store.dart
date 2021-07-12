@@ -1,8 +1,10 @@
 import 'package:mobx/mobx.dart';
 import 'package:to_do/features/todo/domain/entities/todo_task.dart';
+import 'package:to_do/features/todo/domain/usecases/add_todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/delete_todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/retrieve_all_tasks.dart';
 import 'package:to_do/features/todo/domain/usecases/update_todo_task.dart';
+import 'package:to_do/features/todo/presentation/mobx/stores/add_todo_form_store.dart';
 import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
 
 part 'todo_store.g.dart';
@@ -14,14 +16,21 @@ abstract class _TodoStoreBase with Store {
     required RetrieveAllTasks retrieveAllTasks,
     required UpdateTodoTask updateTodoTask,
     required DeleteTodoTask deleteTodoTask,
+    required AddTodoTask addTodoTask,
+    required this.addTodoFormStore,
   })  : this._retrieveAllTasks = retrieveAllTasks,
         this._updateTodoTask = updateTodoTask,
+        this._addTodoTask = addTodoTask,
         this._deleteTodoTask = deleteTodoTask;
 
   // Use cases
   final RetrieveAllTasks _retrieveAllTasks;
   final UpdateTodoTask _updateTodoTask;
   final DeleteTodoTask _deleteTodoTask;
+  final AddTodoTask _addTodoTask;
+
+  // Store
+  final AddTodoFormStore addTodoFormStore;
 
   List<TodoTask> _todoTasks = <TodoTask>[];
 
@@ -46,9 +55,19 @@ abstract class _TodoStoreBase with Store {
   }
 
   @action
-  Future<void> addTodoTask(TodoTask task) async {
-    _todoTasks.add(task);
-    todoTasks = _todoTasks;
+  Future<void> addTodoTask() async {
+    if (currentState != TodoState.loading) {
+      todoState = TodoState.loading;
+      final task = _createTaskToAdd();
+      final addEither = await _addTodoTask(task);
+      addEither.fold((_) async {
+        await _loadTodoTasks();
+        todoState = TodoState.added;
+        print('Store list: $todoTasks');
+      }, (failure) {
+        todoState = TodoState.error;
+      });
+    }
   }
 
   @action
@@ -70,6 +89,20 @@ abstract class _TodoStoreBase with Store {
     }, (failure) {
       todoState = TodoState.error;
     });
+  }
+
+  TodoTask _createTaskToAdd() {
+    final name = addTodoFormStore.name;
+    final description = addTodoFormStore.description;
+    final lastId = int.parse(_todoTasks.last.id);
+    final id = lastId + 1;
+    final task = TodoTask(
+      id: id.toString(),
+      completed: false,
+      name: name,
+      description: description,
+    );
+    return task;
   }
 
   Future<void> _loadTodoTasks() async {
