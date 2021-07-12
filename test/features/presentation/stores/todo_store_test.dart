@@ -6,7 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:to_do/commons/errors/failures/cache_failure.dart';
 import 'package:to_do/features/todo/domain/entities/todo_task.dart';
 import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
-import 'package:to_do/features/todo/presentation/stores/todo_store.dart';
+import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
 
 import '../mocks/mocks.dart';
 
@@ -82,7 +82,7 @@ void main() {
       when(mockRetrieveAllTasks())
           .thenAnswer((_) async => Right(CacheFailure()));
 
-      await sut.loadTodoTasks();
+      await sut.retrieveAllTasks();
 
       verify(mockRetrieveAllTasks());
 
@@ -110,7 +110,7 @@ void main() {
       expect(listResultBeforeCall, []);
       expect(stateResultBeforeCall, TodoState.initial);
 
-      await sut.loadTodoTasks();
+      await sut.retrieveAllTasks();
 
       verify(mockRetrieveAllTasks());
 
@@ -133,7 +133,7 @@ void main() {
 
       when(mockRetrieveAllTasks()).thenAnswer((_) async => Left([secondItem]));
 
-      await sut.deleteTask(firstItem);
+      await sut.deleteTodoTask(firstItem);
 
       verify(mockDeleteTodoTask(firstItem));
       verify(mockRetrieveAllTasks());
@@ -156,7 +156,7 @@ void main() {
       when(mockDeleteTodoTask(firstItem))
           .thenAnswer((_) async => Right(const CacheFailure()));
 
-      await sut.deleteTask(firstItem);
+      await sut.deleteTodoTask(firstItem);
 
       verify(mockDeleteTodoTask(firstItem));
 
@@ -180,7 +180,7 @@ void main() {
       when(mockRetrieveAllTasks())
           .thenAnswer((_) async => Left([updatedItem, secondItem]));
 
-      await sut.updateTask(0, firstItem);
+      await sut.updateTodoTask(firstItem);
 
       verify(mockUpdateTodoTask(firstItem));
       verify(mockRetrieveAllTasks());
@@ -200,7 +200,7 @@ void main() {
       when(mockUpdateTodoTask(updatedItem))
           .thenAnswer((_) async => Right(const CacheFailure()));
 
-      await sut.updateTask(0, firstItem);
+      await sut.updateTodoTask(firstItem);
 
       verify(mockUpdateTodoTask(firstItem));
 

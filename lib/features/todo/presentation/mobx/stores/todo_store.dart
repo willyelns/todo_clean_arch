@@ -11,15 +11,17 @@ class TodoStore = _TodoStoreBase with _$TodoStore;
 
 abstract class _TodoStoreBase with Store {
   _TodoStoreBase({
-    required this.retrieveAllTasks,
-    required this.updateTodoTask,
-    required this.deleteTodoTask,
-  });
+    required RetrieveAllTasks retrieveAllTasks,
+    required UpdateTodoTask updateTodoTask,
+    required DeleteTodoTask deleteTodoTask,
+  })  : this._retrieveAllTasks = retrieveAllTasks,
+        this._updateTodoTask = updateTodoTask,
+        this._deleteTodoTask = deleteTodoTask;
 
   // Use cases
-  final RetrieveAllTasks retrieveAllTasks;
-  final UpdateTodoTask updateTodoTask;
-  final DeleteTodoTask deleteTodoTask;
+  final RetrieveAllTasks _retrieveAllTasks;
+  final UpdateTodoTask _updateTodoTask;
+  final DeleteTodoTask _deleteTodoTask;
 
   List<TodoTask> _todoTasks = <TodoTask>[];
 
@@ -39,8 +41,8 @@ abstract class _TodoStoreBase with Store {
 
   // Action methods
   @action
-  Future<void> loadTodoTasks() async {
-    await _listAll();
+  Future<void> retrieveAllTasks() async {
+    await _loadTodoTasks();
   }
 
   @action
@@ -50,29 +52,29 @@ abstract class _TodoStoreBase with Store {
   }
 
   @action
-  Future<void> updateTask(int index, TodoTask task) async {
-    final updateEither = await updateTodoTask(task);
+  Future<void> updateTodoTask(TodoTask task) async {
+    final updateEither = await _updateTodoTask(task);
     updateEither.fold((_) async {
-      await _listAll();
+      await _loadTodoTasks();
     }, (failure) {
       todoState = TodoState.error;
     });
   }
 
   @action
-  Future<void> deleteTask(TodoTask task) async {
-    final deleteEither = await deleteTodoTask(task);
+  Future<void> deleteTodoTask(TodoTask task) async {
+    final deleteEither = await _deleteTodoTask(task);
     deleteEither.fold((_) async {
-      await _listAll();
+      await _loadTodoTasks();
       todoState = TodoState.deleted;
     }, (failure) {
       todoState = TodoState.error;
     });
   }
 
-  Future<void> _listAll() async {
+  Future<void> _loadTodoTasks() async {
     todoState = TodoState.loading;
-    final listEither = await retrieveAllTasks();
+    final listEither = await _retrieveAllTasks();
     listEither.fold((list) {
       _todoTasks = list;
       todoTasks = _todoTasks;

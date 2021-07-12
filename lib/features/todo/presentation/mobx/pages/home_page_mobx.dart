@@ -3,7 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:to_do/features/todo/domain/entities/todo_task.dart';
 import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
-import 'package:to_do/features/todo/presentation/stores/todo_store.dart';
+import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
 import 'package:to_do/injection_container.dart';
 
 class HomePageMobx extends StatefulWidget {
@@ -25,7 +25,7 @@ class _HomePageMobxState extends State<HomePageMobx> {
   @override
   void initState() {
     super.initState();
-    todoStore.loadTodoTasks();
+    todoStore.retrieveAllTasks();
     print('list: ${todoStore.todoTasks}');
 
     disposer = reaction((_) => todoStore.todoState, (state) {
@@ -103,7 +103,7 @@ class _LoadedStateWidget extends StatelessWidget {
       ));
     }
     return RefreshIndicator(
-      onRefresh: todoStore.loadTodoTasks,
+      onRefresh: todoStore.retrieveAllTasks,
       child: ListView.builder(
         itemCount: todoTasks.length,
         itemBuilder: (context, index) {
@@ -113,7 +113,7 @@ class _LoadedStateWidget extends StatelessWidget {
               value: todoTask.completed,
               onChanged: (value) {
                 final task = todoTask.copyWith(completed: value);
-                todoStore.updateTask(index, task);
+                todoStore.updateTodoTask(task);
               },
             ),
             title: Text(todoTask.name),
@@ -139,7 +139,7 @@ class _LoadedStateWidget extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              todoStore.deleteTask(todoTask);
+              todoStore.deleteTodoTask(todoTask);
               Navigator.of(context).pop();
             },
             child: Text('Confirm'),

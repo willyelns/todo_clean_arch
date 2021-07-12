@@ -54,12 +54,12 @@ mixin _$TodoStore on _TodoStoreBase, Store {
     });
   }
 
-  final _$loadTodoTasksAsyncAction =
-      AsyncAction('_TodoStoreBase.loadTodoTasks');
+  final _$retrieveAllTasksAsyncAction =
+      AsyncAction('_TodoStoreBase.retrieveAllTasks');
 
   @override
-  Future<void> loadTodoTasks() {
-    return _$loadTodoTasksAsyncAction.run(() => super.loadTodoTasks());
+  Future<void> retrieveAllTasks() {
+    return _$retrieveAllTasksAsyncAction.run(() => super.retrieveAllTasks());
   }
 
   final _$addTodoTaskAsyncAction = AsyncAction('_TodoStoreBase.addTodoTask');
@@ -69,18 +69,20 @@ mixin _$TodoStore on _TodoStoreBase, Store {
     return _$addTodoTaskAsyncAction.run(() => super.addTodoTask(task));
   }
 
-  final _$updateTaskAsyncAction = AsyncAction('_TodoStoreBase.updateTask');
+  final _$updateTodoTaskAsyncAction =
+      AsyncAction('_TodoStoreBase.updateTodoTask');
 
   @override
-  Future<void> updateTask(int index, TodoTask task) {
-    return _$updateTaskAsyncAction.run(() => super.updateTask(index, task));
+  Future<void> updateTodoTask(TodoTask task) {
+    return _$updateTodoTaskAsyncAction.run(() => super.updateTodoTask(task));
   }
 
-  final _$deleteTaskAsyncAction = AsyncAction('_TodoStoreBase.deleteTask');
+  final _$deleteTodoTaskAsyncAction =
+      AsyncAction('_TodoStoreBase.deleteTodoTask');
 
   @override
-  Future<void> deleteTask(TodoTask task) {
-    return _$deleteTaskAsyncAction.run(() => super.deleteTask(task));
+  Future<void> deleteTodoTask(TodoTask task) {
+    return _$deleteTodoTaskAsyncAction.run(() => super.deleteTodoTask(task));
   }
 
   @override
