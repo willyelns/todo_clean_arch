@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:to_do/features/todo/domain/entities/todo_task.dart';
 import 'package:to_do/features/todo/presentation/getx/controllers/todo_controller.dart';
 import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
-import 'package:to_do/features/todo/presentation/stores/todo_store.dart';
-import 'package:to_do/injection_container.dart';
 
 class HomePageGetx extends StatelessWidget {
   HomePageGetx({Key? key}) : super(key: key);
@@ -69,13 +67,12 @@ class HomePageGetx extends StatelessWidget {
 }
 
 class _LoadedStateWidget extends StatelessWidget {
-  final todoStore = serviceLocator<TodoStore>();
-
   _LoadedStateWidget({Key? key}) : super(key: key);
+  final todoController = Get.find<TodoController>();
 
   @override
   Widget build(BuildContext context) {
-    final List<TodoTask> todoTasks = todoStore.todoTasks;
+    final List<TodoTask> todoTasks = todoController.todoTasks;
 
     if (todoTasks.isEmpty) {
       return Center(
@@ -84,7 +81,7 @@ class _LoadedStateWidget extends StatelessWidget {
       ));
     }
     return RefreshIndicator(
-      onRefresh: todoStore.loadTodoTasks,
+      onRefresh: todoController.retrieveAllTasks,
       child: ListView.builder(
         itemCount: todoTasks.length,
         itemBuilder: (context, index) {
@@ -94,7 +91,7 @@ class _LoadedStateWidget extends StatelessWidget {
               value: todoTask.completed,
               onChanged: (value) {
                 final task = todoTask.copyWith(completed: value);
-                todoStore.updateTask(index, task);
+                todoController.updateTodoTask(task);
               },
             ),
             title: Text(todoTask.name),
@@ -120,7 +117,7 @@ class _LoadedStateWidget extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              todoStore.deleteTask(todoTask);
+              todoController.deleteTodoTask(todoTask);
               Navigator.of(context).pop();
             },
             child: Text('Confirm'),

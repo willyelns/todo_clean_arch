@@ -9,7 +9,7 @@ import 'package:to_do/features/todo/domain/usecases/retrieve_all_tasks.dart';
 import 'package:to_do/features/todo/domain/usecases/update_todo_task.dart';
 import 'package:to_do/features/todo/local/datasources/todo_local_datasource.dart';
 import 'package:to_do/features/todo/presentation/bloc/todo_bloc.dart';
-import 'package:to_do/features/todo/presentation/stores/todo_store.dart';
+import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
 import 'package:to_do/features/todo/remote/datasources/todo_remote_data_source_impl.dart';
 
 final serviceLocator = GetIt.instance;

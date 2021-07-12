@@ -6,18 +6,18 @@
     "configurations": [
 
         {
-            "name": "to_do",
+            "name": "to do",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "to_do_getx",
+            "name": "to do - getx",
             "request": "launch",
             "type": "dart",
             "program": "lib/main_getx.dart",
         },
         {
-            "name": "to_do (profile mode)",
+            "name": "to do (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"

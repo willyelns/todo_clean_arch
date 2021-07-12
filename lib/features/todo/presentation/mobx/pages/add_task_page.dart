@@ -10,11 +10,10 @@ class AddTaskPageMobx extends StatelessWidget {
         title: Text('Add task - MobX'),
       ),
       body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
+        // onTap: () => FocusScope.of(context).unfocus(),
         child: Container(
           padding: const EdgeInsets.all(16),
-          child: Form(
-              child: Column(
+          child: Column(
             children: [
               TextField(
                 decoration: InputDecoration(labelText: 'Name'),
@@ -28,6 +27,7 @@ class AddTaskPageMobx extends StatelessWidget {
                 margin: const EdgeInsets.only(top: 16),
                 child: ElevatedButton(
                   onPressed: () {
+                    Navigator.of(context).pop();
                     print('created');
                   },
                   child: Container(
@@ -40,7 +40,7 @@ class AddTaskPageMobx extends StatelessWidget {
                 ),
               )
             ],
-          )),
+          ),
         ),
       ),
     );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:to_do/routes.dart';
+import 'package:to_do/routes/routes.dart';
 
 class App extends StatelessWidget {
   @override

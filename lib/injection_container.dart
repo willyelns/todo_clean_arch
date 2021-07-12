@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:to_do/features/todo/domain/usecases/update_todo_task.dart';
-import 'package:to_do/features/todo/presentation/stores/todo_store.dart';
+import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
 
 import 'commons/services/network/network_info.dart';
 import 'features/todo/data/datasources/todo_data_source.dart';
