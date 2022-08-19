@@ -13,7 +13,6 @@ class TodoTask extends Equatable with Copyable {
   final bool completed;
   final String name;
   final String? description;
-
   TodoTask copyWith({
     String? id,
     bool? completed,
