@@ -5,7 +5,7 @@ import 'package:to_do/features/todo/data/datasources/todo_data_source.dart';
 import 'package:to_do/features/todo/data/models/todo_task_model.dart';
 import 'package:to_do/features/todo/domain/entities/todo_task.dart';
 import 'package:dartz/dartz.dart';
-import 'package:to_do/features/todo/domain/repositories/todo_repositoy.dart';
+import 'package:to_do/features/todo/domain/repositories/todo_repository.dart';
 
 class TodoRepositoryImpl implements TodoRepository {
   final NetworkInfo networkInfo;

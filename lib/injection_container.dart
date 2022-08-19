@@ -7,7 +7,7 @@ import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
 import 'commons/services/network/network_info.dart';
 import 'features/todo/data/datasources/todo_data_source.dart';
 import 'features/todo/data/repositories/todo_repositories_impl.dart';
-import 'features/todo/domain/repositories/todo_repositoy.dart';
+import 'features/todo/domain/repositories/todo_repository.dart';
 import 'features/todo/domain/usecases/add_todo_task.dart';
 import 'features/todo/domain/usecases/delete_todo_task.dart';
 import 'features/todo/domain/usecases/retrieve_all_tasks.dart';
