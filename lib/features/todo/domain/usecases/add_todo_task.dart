@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:to_do/commons/errors/failures/failure.dart';
 import 'package:to_do/features/todo/domain/entities/todo_task.dart';
-import 'package:to_do/features/todo/domain/repositories/todo_repositoy.dart';
+import 'package:to_do/features/todo/domain/repositories/todo_repository.dart';
 
 abstract class AddTodoTask {
   Future<Either<void, Failure>> call(TodoTask todoTask);

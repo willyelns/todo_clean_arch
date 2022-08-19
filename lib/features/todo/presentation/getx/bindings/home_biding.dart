@@ -3,7 +3,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:to_do/commons/services/network/network_info.dart';
 import 'package:to_do/features/todo/data/datasources/todo_data_source.dart';
 import 'package:to_do/features/todo/data/repositories/todo_repositories_impl.dart';
-import 'package:to_do/features/todo/domain/repositories/todo_repositoy.dart';
+import 'package:to_do/features/todo/domain/repositories/todo_repository.dart';
 import 'package:to_do/features/todo/domain/usecases/add_todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/delete_todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/retrieve_all_tasks.dart';
