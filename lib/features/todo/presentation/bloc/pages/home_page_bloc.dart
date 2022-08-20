@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:to_do/features/todo/domain/entities/todo_task.dart';
-import 'package:to_do/features/todo/presentation/bloc/todo_bloc.dart';
-import 'package:to_do/injection_container.dart';
+
+import '../../../../../injection_container.dart';
+import '../../../../../routes/app_pages.dart';
+import '../../../domain/entities/todo_task.dart';
+import '../todo_bloc.dart';
 
 class HomePageBloc extends StatefulWidget {
-  HomePageBloc({Key? key}) : super(key: key);
+  const HomePageBloc({Key? key}) : super(key: key);
 
   @override
   _HomePageBlocState createState() => _HomePageBlocState();
@@ -14,7 +16,7 @@ class HomePageBloc extends StatefulWidget {
 class _HomePageBlocState extends State<HomePageBloc> {
   final todoBloc = serviceLocator<TodoBloc>();
 
-  void _addTask() async {}
+  Future<void> _addTask() async {}
 
   @override
   void initState() {
@@ -30,30 +32,31 @@ class _HomePageBlocState extends State<HomePageBloc> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('To do list - Bloc'),
+              title: const Text('To do list - Bloc'),
             ),
             body: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
+              builder: (context, constraints) {
                 if (state is TodoDeletedState) {
                   _showDeletedSnackBar(context);
                 }
-
-                if (state is TodoLoadingState)
-                  return Center(child: CircularProgressIndicator());
-                else if (state is TodoInitialState)
-                  return Center(child: Text('Initial value'));
-                else if (state is TodoLoadedState)
+                if (state is TodoLoadingState) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is TodoInitialState) {
+                  return const Center(child: Text('Initial value'));
+                }
+                if (state is TodoLoadedState) {
                   return _LoadedStateWidget(
                     todoTasks: state.todoTasks,
                   );
-                else
-                  return Text('Error to handle');
+                }
+                return const Text('Error to handle');
               },
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: _addTask,
               tooltip: 'Add Todo task',
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             ),
           );
         },
@@ -63,7 +66,7 @@ class _HomePageBlocState extends State<HomePageBloc> {
 
   void _showDeletedSnackBar(BuildContext context) {
     final snackBar = SnackBar(
-      content: Text('Task removed with success!'),
+      content: const Text('Task removed with success!'),
       action: SnackBarAction(
         label: 'OK',
         onPressed: () {
@@ -76,18 +79,18 @@ class _HomePageBlocState extends State<HomePageBloc> {
 }
 
 class _LoadedStateWidget extends StatelessWidget {
+  _LoadedStateWidget({
+    required this.todoTasks,
+    Key? key,
+  }) : super(key: key);
+
   final todoBloc = serviceLocator<TodoBloc>();
   final List<TodoTask> todoTasks;
-
-  _LoadedStateWidget({Key? key, required this.todoTasks}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (todoTasks.isEmpty) {
-      return Center(
-          child: Container(
-        child: Text('No tasks'),
-      ));
+      return const Center(child: Text('No tasks'));
     }
     return RefreshIndicator(
       onRefresh: () async => todoBloc.add(TodoList()),
@@ -115,22 +118,22 @@ class _LoadedStateWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Delete"),
-        content: Text("Delete this task: ${todoTask.name}"),
+        title: const Text('Delete'),
+        content: Text('Delete this task: ${todoTask.name}'),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context.pop();
             },
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
               // todoStore.deleteTask(todoTask);
               todoBloc.add(TodoDeleted(todoTask));
-              Navigator.of(context).pop();
+              context.pop();
             },
-            child: Text('Confirm'),
+            child: const Text('Confirm'),
           )
         ],
       ),

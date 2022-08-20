@@ -1,10 +1,7 @@
 import 'failure.dart';
 
-class CacheFailure implements Failure {
-  const CacheFailure({this.message});
-
-  @override
-  final String? message;
+class CacheFailure extends Failure {
+  const CacheFailure({String? message}) : super(message);
 
   @override
   bool? get stringify => true;

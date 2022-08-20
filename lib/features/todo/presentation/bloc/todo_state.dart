@@ -14,9 +14,9 @@ class TodoLoadingState extends TodoState {}
 class TodoDeletedState extends TodoState {}
 
 class TodoLoadedState extends TodoState {
-  final List<TodoTask> todoTasks;
-
   const TodoLoadedState([this.todoTasks = const []]);
+
+  final List<TodoTask> todoTasks;
 
   @override
   List<Object> get props => [todoTasks];

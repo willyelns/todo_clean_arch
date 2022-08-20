@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:to_do/commons/mixins/copyable.dart';
+import '../../../../commons/mixins/copyable.dart';
 
 class TodoTask extends Equatable with Copyable {
   const TodoTask({
@@ -13,6 +13,8 @@ class TodoTask extends Equatable with Copyable {
   final bool completed;
   final String name;
   final String? description;
+
+  @override
   TodoTask copyWith({
     String? id,
     bool? completed,

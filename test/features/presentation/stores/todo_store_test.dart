@@ -1,12 +1,10 @@
-import 'dart:ffi';
-
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:to_do/commons/errors/failures/cache_failure.dart';
 import 'package:to_do/features/todo/domain/entities/todo_task.dart';
-import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
 import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
+import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
 
 import '../mocks/mock_add_todo_form_store.dart';
 import '../mocks/mock_add_todo_task.dart';
@@ -36,13 +34,13 @@ void main() {
     );
   });
 
-  final idFirst = 'id-1';
-  final idSecond = 'id-2';
-  final completed = false;
-  final name = 'name';
-  final firstItem = TodoTask(id: idFirst, completed: completed, name: name);
-  final secondItem = TodoTask(id: idSecond, completed: completed, name: name);
-  final updatedItem = TodoTask(id: idFirst, completed: true, name: name);
+  const idFirst = 'id-1';
+  const idSecond = 'id-2';
+  const completed = false;
+  const name = 'name';
+  const firstItem = TodoTask(id: idFirst, completed: completed, name: name);
+  const secondItem = TodoTask(id: idSecond, completed: completed, name: name);
+  const updatedItem = TodoTask(id: idFirst, completed: true, name: name);
   final todoTaskList = [firstItem, secondItem];
 
   test(
@@ -88,7 +86,7 @@ void main() {
     'should return an error state when the loadTodoTasks() call fails',
     () async {
       when(mockRetrieveAllTasks())
-          .thenAnswer((_) async => Right(CacheFailure()));
+          .thenAnswer((_) async => const Right(CacheFailure()));
 
       await sut.retrieveAllTasks();
 
@@ -137,9 +135,11 @@ void main() {
   test(
     'should return a list with the value deleted after the deleteTodoTask() call',
     () async {
-      when(mockDeleteTodoTask(firstItem)).thenAnswer((_) async => Left(Void));
+      when(mockDeleteTodoTask(firstItem))
+          .thenAnswer((_) async => const Left(null));
 
-      when(mockRetrieveAllTasks()).thenAnswer((_) async => Left([secondItem]));
+      when(mockRetrieveAllTasks())
+          .thenAnswer((_) async => const Left([secondItem]));
 
       await sut.deleteTodoTask(firstItem);
 
@@ -162,7 +162,7 @@ void main() {
     'should return an error state when the deleteTodoTask() call fails',
     () async {
       when(mockDeleteTodoTask(firstItem))
-          .thenAnswer((_) async => Right(const CacheFailure()));
+          .thenAnswer((_) async => const Right(CacheFailure()));
 
       await sut.deleteTodoTask(firstItem);
 
@@ -183,10 +183,11 @@ void main() {
   test(
     'should return a list with the value updated after the updateTodoTask() call',
     () async {
-      when(mockUpdateTodoTask(updatedItem)).thenAnswer((_) async => Left(Void));
+      when(mockUpdateTodoTask(updatedItem))
+          .thenAnswer((_) async => const Left(null));
 
       when(mockRetrieveAllTasks())
-          .thenAnswer((_) async => Left([updatedItem, secondItem]));
+          .thenAnswer((_) async => const Left([updatedItem, secondItem]));
 
       await sut.updateTodoTask(firstItem);
 
@@ -206,7 +207,7 @@ void main() {
     'should return an error status when the updateTodoTask() fails',
     () async {
       when(mockUpdateTodoTask(updatedItem))
-          .thenAnswer((_) async => Right(const CacheFailure()));
+          .thenAnswer((_) async => const Right(CacheFailure()));
 
       await sut.updateTodoTask(firstItem);
 

@@ -4,13 +4,13 @@ import 'package:to_do/commons/mixins/copyable.dart';
 import 'package:to_do/features/todo/domain/entities/todo_task.dart';
 
 void main() {
-  final tId = 'id';
-  final tCompleted = false;
-  final tName = 'name';
+  const tId = 'id';
+  const tCompleted = false;
+  const tName = 'name';
   late TodoTask sut;
 
   setUp(() {
-    sut = TodoTask(id: tId, completed: tCompleted, name: tName);
+    sut = const TodoTask(id: tId, completed: tCompleted, name: tName);
   });
 
   test('should the sut extends the Equatable', () {

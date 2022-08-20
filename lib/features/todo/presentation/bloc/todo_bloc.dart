@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:to_do/features/todo/domain/entities/todo_task.dart';
-import 'package:to_do/features/todo/domain/usecases/delete_todo_task.dart';
-import 'package:to_do/features/todo/domain/usecases/retrieve_all_tasks.dart';
-import 'package:to_do/features/todo/domain/usecases/update_todo_task.dart';
+import '../../domain/entities/todo_task.dart';
+import '../../domain/usecases/delete_todo_task.dart';
+import '../../domain/usecases/retrieve_all_tasks.dart';
+import '../../domain/usecases/update_todo_task.dart';
 
 part 'todo_event.dart';
 part 'todo_state.dart';

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:to_do/commons/services/network/network_info.dart';
@@ -14,7 +15,6 @@ import 'package:to_do/features/todo/presentation/mobx/stores/add_todo_form_store
 import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
 import 'package:to_do/features/todo/remote/datasources/todo_remote_data_source_impl.dart';
 import 'package:to_do/features/todo/remote/datasources/todo_retrofit_data_source.dart';
-import 'package:dio/dio.dart';
 
 final serviceLocator = GetIt.instance;
 

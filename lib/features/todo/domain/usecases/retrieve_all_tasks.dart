@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:to_do/commons/errors/failures/failure.dart';
-import 'package:to_do/features/todo/domain/entities/todo_task.dart';
-import 'package:to_do/features/todo/domain/repositories/todo_repository.dart';
+import '../../../../commons/errors/failures/failure.dart';
+import '../entities/todo_task.dart';
+import '../repositories/todo_repository.dart';
 
 abstract class RetrieveAllTasks {
   Future<Either<List<TodoTask>, Failure>> call();
@@ -14,6 +14,6 @@ class RetrieveAllTasksImpl implements RetrieveAllTasks {
 
   @override
   Future<Either<List<TodoTask>, Failure>> call() async {
-    return await repository.retrieveAllTasks();
+    return repository.retrieveAllTasks();
   }
 }

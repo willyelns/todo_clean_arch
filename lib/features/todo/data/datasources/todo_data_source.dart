@@ -1,4 +1,4 @@
-import 'package:to_do/features/todo/data/models/todo_task_model.dart';
+import '../models/todo_task_model.dart';
 
 abstract class TodoDataSource {
   Future<List<TodoTaskModel>> retrieveAllTasks();

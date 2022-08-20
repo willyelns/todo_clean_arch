@@ -1,10 +1,7 @@
 import 'failure.dart';
 
-class ServerFailure implements Failure {
-  const ServerFailure({this.message});
-
-  @override
-  final String? message;
+class ServerFailure extends Failure {
+  const ServerFailure({String? message}) : super(message);
 
   @override
   bool? get stringify => true;

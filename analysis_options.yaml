@@ -1,3 +1,86 @@
+include: package:flutter_lints/flutter.yaml
+
 analyzer:
-  enable-experiment:
-    - nonfunction-type-aliases
+  exclude:
+    - lib/**/*.g.dart
+
+linter:
+  rules:
+    # PEDANTIC
+    - always_declare_return_types
+    - omit_local_variable_types
+    - prefer_single_quotes
+    - unawaited_futures
+    - unsafe_html
+
+    # EFFECTIVE DART
+    - avoid_catches_without_on_clauses
+    - avoid_catching_errors
+    - avoid_classes_with_only_static_members
+    - avoid_equals_and_hash_code_on_mutable_classes
+    - avoid_positional_boolean_parameters
+    - avoid_private_typedef_functions
+    - avoid_returning_null
+    - avoid_returning_this
+    - avoid_setters_without_getters
+    - avoid_types_on_closure_parameters
+    - directives_ordering
+    - prefer_interpolation_to_compose_strings
+    - prefer_mixin
+    - prefer_relative_imports
+    - type_annotate_public_apis
+    - unnecessary_lambdas
+    - use_setters_to_change_properties
+    - use_to_and_as_if_applicable
+
+    # FLUTTER ANALYZE
+    - cancel_subscriptions
+    - close_sinks
+    - literal_only_boolean_expressions
+    - only_throw_errors
+    - sort_constructors_first
+    - sort_unnamed_constructors_first
+    - test_types_in_equals
+    - throw_in_finally
+    - unnecessary_statements
+
+    # LINTER
+    - always_put_control_body_on_new_line
+    - always_put_required_named_parameters_first
+    - avoid_annotating_with_dynamic
+    - avoid_bool_literals_in_conditional_expressions
+    - avoid_double_and_int_checks
+    - avoid_escaping_inner_quotes
+    - avoid_field_initializers_in_const_classes
+    - avoid_implementing_value_types
+    - avoid_js_rounded_ints
+    - avoid_redundant_argument_values
+    - avoid_returning_null_for_future
+    - avoid_slow_async_io
+    - avoid_unused_constructor_parameters
+    - avoid_void_async
+    - flutter_style_todos
+    - join_return_with_assignment
+    - leading_newlines_in_multiline_strings
+    - missing_whitespace_between_adjacent_strings
+    - no_adjacent_strings_in_list
+    - no_default_cases
+    - no_runtimeType_toString
+    - parameter_assignments
+    - prefer_asserts_in_initializer_lists
+    - prefer_asserts_with_message
+    - prefer_constructors_over_static_methods
+    - prefer_final_in_for_each
+    - prefer_final_locals
+    - prefer_foreach
+    - prefer_if_elements_to_conditional_expressions
+    - sort_child_properties_last
+    - unnecessary_await_in_return
+    - unnecessary_null_aware_assignments
+    - unnecessary_nullable_for_final_variable_declarations
+    - unnecessary_parenthesis
+    - unnecessary_raw_strings
+    - use_is_even_rather_than_modulo
+    - use_late_for_private_fields_and_variables
+    - use_raw_strings
+    - use_string_buffers

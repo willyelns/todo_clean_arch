@@ -1,5 +1,5 @@
-import 'package:to_do/commons/mixins/decoder.dart';
-import 'package:to_do/features/todo/domain/entities/todo_task.dart';
+import '../../../../commons/mixins/decoder.dart';
+import '../../domain/entities/todo_task.dart';
 
 class TodoTaskModel extends TodoTask with Decoder {
   TodoTaskModel({
@@ -7,7 +7,6 @@ class TodoTaskModel extends TodoTask with Decoder {
     required bool completed,
     required String name,
     String? description,
-    String? icon,
   }) : super(
           id: id,
           completed: completed,
@@ -31,7 +30,7 @@ class TodoTaskModel extends TodoTask with Decoder {
 
   @override
   Json toJson() {
-    final Json response = {
+    final response = {
       'id': id,
       'completed': completed,
       'name': name,

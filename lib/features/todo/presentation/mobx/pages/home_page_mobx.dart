@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
-import 'package:to_do/features/todo/domain/entities/todo_task.dart';
-import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
-import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
-import 'package:to_do/injection_container.dart';
+
+import '../../../../../injection_container.dart';
+import '../../../../../routes/app_pages.dart';
+import '../../../domain/entities/todo_task.dart';
+import '../../page_states/todo_state.dart';
+import '../stores/todo_store.dart';
 
 class HomePageMobx extends StatefulWidget {
-  HomePageMobx({Key? key}) : super(key: key);
+  const HomePageMobx({Key? key}) : super(key: key);
 
   @override
   _HomePageMobxState createState() => _HomePageMobxState();
@@ -18,22 +20,26 @@ class _HomePageMobxState extends State<HomePageMobx> {
 
   List<ReactionDisposer> disposers = [];
 
-  void _addTask() async {
-    await Navigator.of(context).pushNamed('add_task_mobx');
+  Future<void> _addTask() async {
+    await context.push(AppPages.addTaskMobx);
   }
 
   @override
   void initState() {
     super.initState();
     todoStore.retrieveAllTasks();
-    print('list: ${todoStore.todoTasks}');
+    debugPrint('list: ${todoStore.todoTasks}');
 
     disposers.add(reaction((_) => todoStore.todoState, (state) {
-      if (state == TodoState.deleted) _showDeletedSnackBar(context);
+      if (state == TodoState.deleted) {
+        _showDeletedSnackBar(context);
+      }
     }));
 
     disposers.add(reaction((_) => todoStore.todoState, (state) {
-      if (state == TodoState.added) todoStore.todoState = TodoState.loaded;
+      if (state == TodoState.added) {
+        todoStore.todoState = TodoState.loaded;
+      }
     }, delay: 500));
   }
 
@@ -41,39 +47,39 @@ class _HomePageMobxState extends State<HomePageMobx> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("To do list with - MobX"),
+        title: const Text('To do list with - MobX'),
       ),
       body: Observer(
         builder: (context) {
           final state = todoStore.currentState;
-          if (state == TodoState.initial) {
-            return _InitialStateWidget();
+
+          switch (state) {
+            case TodoState.initial:
+              return const _InitialStateWidget();
+            case TodoState.loading:
+              return const _LoadingStateWidget();
+            case TodoState.loaded:
+            case TodoState.added:
+            case TodoState.deleted:
+              return const _LoadedStateWidget();
+            case TodoState.error:
+              return _ErrorStateWidget(
+                errorMessage: todoStore.errorMessage,
+              );
           }
-          if (state == TodoState.loading) {
-            return _LoadingStateWidget();
-          }
-          if (state == TodoState.loaded || state == TodoState.deleted) {
-            return _LoadedStateWidget();
-          }
-          if (state == TodoState.error) {
-            return _ErrorStateWidget(
-              errorMessage: todoStore.errorMessage,
-            );
-          }
-          return Text('Not Recognized');
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addTask,
         tooltip: 'Add new Task',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
 
   void _showDeletedSnackBar(BuildContext context) {
     final snackBar = SnackBar(
-      content: Text('Task removed with success!'),
+      content: const Text('Task removed with success!'),
       action: SnackBarAction(
         label: 'OK',
         onPressed: () {
@@ -86,6 +92,7 @@ class _HomePageMobxState extends State<HomePageMobx> {
 
   @override
   void dispose() {
+    // TODO: CREATE DISPOSE.ALL()
     disposers.forEach((element) {
       element.reaction.dispose();
     });
@@ -94,19 +101,15 @@ class _HomePageMobxState extends State<HomePageMobx> {
 }
 
 class _LoadedStateWidget extends StatelessWidget {
-  final todoStore = serviceLocator<TodoStore>();
+  const _LoadedStateWidget({Key? key}) : super(key: key);
 
-  _LoadedStateWidget({Key? key}) : super(key: key);
+  TodoStore get todoStore => serviceLocator<TodoStore>();
+  List<TodoTask> get todoTasks => todoStore.todoTasks;
 
   @override
   Widget build(BuildContext context) {
-    final List<TodoTask> todoTasks = todoStore.todoTasks;
-
     if (todoTasks.isEmpty) {
-      return Center(
-          child: Container(
-        child: Text('No tasks'),
-      ));
+      return const Center(child: Text('No tasks'));
     }
     return RefreshIndicator(
       onRefresh: todoStore.retrieveAllTasks,
@@ -134,21 +137,21 @@ class _LoadedStateWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Delete"),
-        content: Text("Delete this task: ${todoTask.name}"),
+        title: const Text('Delete'),
+        content: Text('Delete this task: ${todoTask.name}'),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context.pop();
             },
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
               todoStore.deleteTodoTask(todoTask);
-              Navigator.of(context).pop();
+              context.pop();
             },
-            child: Text('Confirm'),
+            child: const Text('Confirm'),
           )
         ],
       ),
@@ -157,12 +160,12 @@ class _LoadedStateWidget extends StatelessWidget {
 }
 
 class _ErrorStateWidget extends StatelessWidget {
-  final String errorMessage;
-
   const _ErrorStateWidget({
     required this.errorMessage,
     Key? key,
   }) : super(key: key);
+
+  final String errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -179,7 +182,7 @@ class _LoadingStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
+    return const Center(child: CircularProgressIndicator());
   }
 }
 
@@ -190,6 +193,6 @@ class _InitialStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Initial State'));
+    return const Center(child: Text('Initial State'));
   }
 }

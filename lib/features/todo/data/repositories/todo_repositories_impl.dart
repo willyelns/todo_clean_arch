@@ -1,22 +1,23 @@
-import 'package:to_do/commons/errors/exceptions/exceptions.dart';
-import 'package:to_do/commons/errors/failures/failures.dart';
-import 'package:to_do/commons/services/network/network_info.dart';
-import 'package:to_do/features/todo/data/datasources/todo_data_source.dart';
-import 'package:to_do/features/todo/data/models/todo_task_model.dart';
-import 'package:to_do/features/todo/domain/entities/todo_task.dart';
 import 'package:dartz/dartz.dart';
-import 'package:to_do/features/todo/domain/repositories/todo_repository.dart';
+
+import '../../../../commons/errors/exceptions/exceptions.dart';
+import '../../../../commons/errors/failures/failures.dart';
+import '../../../../commons/services/network/network_info.dart';
+import '../../domain/entities/todo_task.dart';
+import '../../domain/repositories/todo_repository.dart';
+import '../datasources/todo_data_source.dart';
+import '../models/todo_task_model.dart';
 
 class TodoRepositoryImpl implements TodoRepository {
-  final NetworkInfo networkInfo;
-  final TodoRemoteDataSource remoteDataSource;
-  final TodoLocalDataSource localDataSource;
-
   const TodoRepositoryImpl({
     required this.networkInfo,
     required this.remoteDataSource,
     required this.localDataSource,
   });
+
+  final NetworkInfo networkInfo;
+  final TodoRemoteDataSource remoteDataSource;
+  final TodoLocalDataSource localDataSource;
 
   @override
   Future<Either<List<TodoTask>, Failure>> retrieveAllTasks() async {
@@ -32,8 +33,8 @@ class TodoRepositoryImpl implements TodoRepository {
       return Left(list);
     } on ServerException {
       return _retrieveLocalAllTasks();
-    } catch (e) {
-      return Right(const ServerFailure());
+    } on Object {
+      return const Right(ServerFailure());
     }
   }
 
@@ -42,9 +43,9 @@ class TodoRepositoryImpl implements TodoRepository {
       final list = await localDataSource.retrieveAllTasks();
       return Left(list);
     } on CacheException {
-      return Right(const CacheFailure());
-    } catch (e) {
-      return Right(const ConnectionFailure());
+      return const Right(CacheFailure());
+    } on Object {
+      return const Right(ConnectionFailure());
     }
   }
 
@@ -63,8 +64,8 @@ class TodoRepositoryImpl implements TodoRepository {
       return Left(list);
     } on ServerException {
       return _updateLocalTask(model);
-    } catch (e) {
-      return Right(const ServerFailure());
+    } on Object {
+      return const Right(ServerFailure());
     }
   }
 
@@ -74,9 +75,9 @@ class TodoRepositoryImpl implements TodoRepository {
           await localDataSource.updateTask(TodoTaskModel.fromEntity(todoTask));
       return Left(list);
     } on CacheException {
-      return Right(const CacheFailure());
-    } catch (e) {
-      return Right(const ConnectionFailure());
+      return const Right(CacheFailure());
+    } on Object {
+      return const Right(ConnectionFailure());
     }
   }
 
@@ -103,8 +104,8 @@ class TodoRepositoryImpl implements TodoRepository {
       return Left(response);
     } on ServerException {
       return _addLocalTask(model);
-    } catch (e) {
-      return Right(const ServerFailure());
+    } on Object {
+      return const Right(ServerFailure());
     }
   }
 
@@ -114,9 +115,9 @@ class TodoRepositoryImpl implements TodoRepository {
           await localDataSource.addTask(TodoTaskModel.fromEntity(todoTask));
       return Left(response);
     } on CacheException {
-      return Right(const CacheFailure());
-    } catch (e) {
-      return Right(const ConnectionFailure());
+      return const Right(CacheFailure());
+    } on Object {
+      return const Right(ConnectionFailure());
     }
   }
 
@@ -127,8 +128,8 @@ class TodoRepositoryImpl implements TodoRepository {
       return Left(list);
     } on ServerException {
       return _deleteLocalTask(model);
-    } catch (e) {
-      return Right(const ServerFailure());
+    } on Object {
+      return const Right(ServerFailure());
     }
   }
 
@@ -138,9 +139,9 @@ class TodoRepositoryImpl implements TodoRepository {
           await localDataSource.deleteTask(TodoTaskModel.fromEntity(todoTask));
       return Left(list);
     } on CacheException {
-      return Right(const CacheFailure());
-    } catch (e) {
-      return Right(const ConnectionFailure());
+      return const Right(CacheFailure());
+    } on Object {
+      return const Right(ConnectionFailure());
     }
   }
 }

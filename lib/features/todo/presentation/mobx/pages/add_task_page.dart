@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
-import 'package:to_do/features/todo/presentation/mobx/stores/todo_store.dart';
-import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
 
 import '../../../../../injection_container.dart';
+import '../../../../../routes/app_pages.dart';
+import '../../page_states/todo_state.dart';
+import '../stores/todo_store.dart';
 
 class AddTaskPageMobx extends StatefulWidget {
-  AddTaskPageMobx({Key? key}) : super(key: key);
+  const AddTaskPageMobx({Key? key}) : super(key: key);
 
   @override
   _AddTaskPageMobxState createState() => _AddTaskPageMobxState();
@@ -22,16 +23,19 @@ class _AddTaskPageMobxState extends State<AddTaskPageMobx> {
   void initState() {
     super.initState();
     disposer = reaction((_) => todoStore.currentState, (state) {
-      if (state == TodoState.added) _returnFromAddPage(context);
+      if (state == TodoState.added) {
+        _returnFromAddPage(context);
+      }
     });
   }
 
   void _returnFromAddPage(BuildContext context) {
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   @override
   void dispose() {
+    //TODO ADD A
     disposer.reaction.dispose();
     super.dispose();
   }
@@ -40,7 +44,7 @@ class _AddTaskPageMobxState extends State<AddTaskPageMobx> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add task - MobX'),
+        title: const Text('Add task - MobX'),
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
@@ -50,11 +54,11 @@ class _AddTaskPageMobxState extends State<AddTaskPageMobx> {
             return Column(
               children: [
                 TextField(
-                  decoration: InputDecoration(labelText: 'Name'),
+                  decoration: const InputDecoration(labelText: 'Name'),
                   onChanged: todoStore.addTodoFormStore.updateName,
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: 'Description'),
+                  decoration: const InputDecoration(labelText: 'Description'),
                   onChanged: todoStore.addTodoFormStore.updateDescription,
                 ),
                 Container(
@@ -68,7 +72,7 @@ class _AddTaskPageMobxState extends State<AddTaskPageMobx> {
                           ? Text(
                               'Add task'.toUpperCase(),
                             )
-                          : SizedBox(
+                          : const SizedBox(
                               width: 16,
                               height: 16,
                               child: CircularProgressIndicator(

@@ -1,11 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
-import 'package:to_do/features/todo/domain/entities/todo_task.dart';
-import 'package:to_do/features/todo/domain/usecases/add_todo_task.dart';
-import 'package:to_do/features/todo/domain/usecases/delete_todo_task.dart';
-import 'package:to_do/features/todo/domain/usecases/retrieve_all_tasks.dart';
-import 'package:to_do/features/todo/domain/usecases/update_todo_task.dart';
-import 'package:to_do/features/todo/presentation/mobx/stores/add_todo_form_store.dart';
-import 'package:to_do/features/todo/presentation/page_states/todo_state.dart';
+
+import '../../../domain/entities/todo_task.dart';
+import '../../../domain/usecases/add_todo_task.dart';
+import '../../../domain/usecases/delete_todo_task.dart';
+import '../../../domain/usecases/retrieve_all_tasks.dart';
+import '../../../domain/usecases/update_todo_task.dart';
+import '../../page_states/todo_state.dart';
+import 'add_todo_form_store.dart';
 
 part 'todo_store.g.dart';
 
@@ -18,10 +20,10 @@ abstract class _TodoStoreBase with Store {
     required DeleteTodoTask deleteTodoTask,
     required AddTodoTask addTodoTask,
     required this.addTodoFormStore,
-  })  : this._retrieveAllTasks = retrieveAllTasks,
-        this._updateTodoTask = updateTodoTask,
-        this._addTodoTask = addTodoTask,
-        this._deleteTodoTask = deleteTodoTask;
+  })  : _retrieveAllTasks = retrieveAllTasks,
+        _updateTodoTask = updateTodoTask,
+        _addTodoTask = addTodoTask,
+        _deleteTodoTask = deleteTodoTask;
 
   // Use cases
   final RetrieveAllTasks _retrieveAllTasks;
@@ -60,10 +62,10 @@ abstract class _TodoStoreBase with Store {
       todoState = TodoState.loading;
       final task = _createTaskToAdd();
       final addEither = await _addTodoTask(task);
-      addEither.fold((_) async {
+      await addEither.fold((_) async {
         await _loadTodoTasks();
         todoState = TodoState.added;
-        print('Store list: $todoTasks');
+        debugPrint('Store list: $todoTasks');
       }, (failure) {
         todoState = TodoState.error;
       });
@@ -73,7 +75,7 @@ abstract class _TodoStoreBase with Store {
   @action
   Future<void> updateTodoTask(TodoTask task) async {
     final updateEither = await _updateTodoTask(task);
-    updateEither.fold((_) async {
+    await updateEither.fold((_) async {
       await _loadTodoTasks();
     }, (failure) {
       todoState = TodoState.error;
@@ -83,7 +85,7 @@ abstract class _TodoStoreBase with Store {
   @action
   Future<void> deleteTodoTask(TodoTask task) async {
     final deleteEither = await _deleteTodoTask(task);
-    deleteEither.fold((_) async {
+    await deleteEither.fold((_) async {
       await _loadTodoTasks();
       todoState = TodoState.deleted;
     }, (failure) {
