@@ -50,6 +50,8 @@ class _HomePageMobxState extends State<HomePageMobx> {
             case TodoState.added:
             case TodoState.deleted:
               return const _LoadedStateWidget();
+            case TodoState.empty:
+              return const _EmptyStateWidget();
             case TodoState.error:
               return _ErrorStateWidget(
                 errorMessage: _todoStore.errorMessage,
@@ -94,6 +96,20 @@ class _HomePageMobxState extends State<HomePageMobx> {
   }
 }
 
+class _EmptyStateWidget extends StatelessWidget {
+  const _EmptyStateWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'No tasks',
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}
+
 class _LoadedStateWidget extends StatelessWidget {
   const _LoadedStateWidget({Key? key}) : super(key: key);
 
@@ -105,14 +121,6 @@ class _LoadedStateWidget extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: _todoStore.retrieveAllTasks,
       child: Builder(builder: (context) {
-        if (_todoTasks.isEmpty) {
-          return const Center(
-            child: Text(
-              'No tasks',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          );
-        }
         return ListView.builder(
           itemCount: _todoTasks.length,
           itemBuilder: (context, index) {
