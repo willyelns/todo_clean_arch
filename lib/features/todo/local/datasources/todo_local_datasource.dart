@@ -14,7 +14,7 @@ class TodoLocalDataSourceImpl implements TodoLocalDataSource {
   @override
   Future<List<TodoTaskModel>> retrieveAllTasks() async {
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(milliseconds: 500));
       return mockData;
     } on Object {
       throw const CacheException();
@@ -45,8 +45,7 @@ class TodoLocalDataSourceImpl implements TodoLocalDataSource {
   @override
   Future<void> addTask(TodoTaskModel taskModel) async {
     try {
-      final where = mockData.length - 1;
-      mockData.insert(where, taskModel);
+      mockData.add(taskModel);
     } on Object {
       throw const CacheException();
     }
