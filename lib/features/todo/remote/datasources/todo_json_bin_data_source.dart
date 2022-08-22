@@ -12,36 +12,39 @@ class TodoJsonBinDataSource {
   final Dio _dio;
   final String _baseUrl;
 
-  final List<TodoTaskModel> _tempList = [];
+  final List<TodoTaskModel> _cachedList = [];
 
   Future<List<TodoTaskModel>> retrieveAllTasks() async {
     final response = await _dio.get(_baseUrl);
     final data = response.data as List<dynamic>;
 
-    data.map((json) => _tempList.add(TodoTaskModel.fromJson(json as JsonData)));
+    final serverList =
+        data.map((json) => TodoTaskModel.fromJson(json as JsonData)).toList();
+    _cachedList.clear();
+    _cachedList.addAll(serverList);
 
-    return _tempList;
+    return _cachedList;
   }
 
   Future<void> updateTask(String id, TodoTaskModel taskModel) async {
-    final index = _tempList.indexWhere((element) => element.id == id);
-    _tempList.removeAt(index);
-    _tempList.insert(index, taskModel);
+    final index = _cachedList.indexWhere((element) => element.id == id);
+    _cachedList.removeAt(index);
+    _cachedList.insert(index, taskModel);
     return _updateServerList();
   }
 
   Future<void> deleteTask(String id) async {
-    _tempList.removeWhere((element) => element.id == id);
+    _cachedList.removeWhere((element) => element.id == id);
     return _updateServerList();
   }
 
   Future<void> addTask(TodoTaskModel taskModel) async {
-    _tempList.add(taskModel);
+    _cachedList.add(taskModel);
     return _updateServerList();
   }
 
   Future<void> _updateServerList() async {
-    final jsonData = _tempList.map((task) => task.toJson()).toList();
+    final jsonData = _cachedList.map((task) => task.toJson()).toList();
     await _dio.put(_baseUrl, data: jsonData);
   }
 }
