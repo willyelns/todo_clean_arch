@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../commons/extensions/theme/theme_context.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../routes/app_pages.dart';
 import '../../../domain/entities/todo_task.dart';
@@ -14,20 +15,20 @@ class HomePageBloc extends StatefulWidget {
 }
 
 class _HomePageBlocState extends State<HomePageBloc> {
-  final todoBloc = serviceLocator<TodoBloc>();
+  TodoBloc get _todoBloc => serviceLocator<TodoBloc>();
 
   Future<void> _addTask() async {}
 
   @override
   void initState() {
     super.initState();
-    todoBloc.add(TodoList());
+    _todoBloc.add(TodoList());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => todoBloc,
+    return BlocProvider<TodoBloc>(
+      create: (context) => _todoBloc,
       child: BlocBuilder<TodoBloc, TodoState>(
         builder: (context, state) {
           return Scaffold(
@@ -36,12 +37,11 @@ class _HomePageBlocState extends State<HomePageBloc> {
             ),
             body: LayoutBuilder(
               builder: (context, constraints) {
-                debugPrint('STATE: $state');
                 if (state is TodoDeletedState) {
                   _showDeletedSnackBar(context);
                 }
                 if (state is TodoLoadingState) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const _LoadingStateWidget();
                 }
                 if (state is TodoInitialState) {
                   return const Center(child: Text('Initial value'));
@@ -66,35 +66,56 @@ class _HomePageBlocState extends State<HomePageBloc> {
   }
 
   void _showDeletedSnackBar(BuildContext context) {
-    final snackBar = SnackBar(
-      content: const Text('Task removed with success!'),
-      action: SnackBarAction(
-        label: 'OK',
-        onPressed: () {
-          // do something
-        },
-      ),
+    context.showSnackBar(title: 'Task removed with success!');
+  }
+}
+
+class _LoadingStateWidget extends StatelessWidget {
+  const _LoadingStateWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(top: 16),
+      child: ListView.builder(
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Container(
+                width: 300,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: Colors.grey[400],
+                ),
+              ),
+            );
+          }),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 
 class _LoadedStateWidget extends StatelessWidget {
-  _LoadedStateWidget({
+  const _LoadedStateWidget({
     required this.todoTasks,
     Key? key,
   }) : super(key: key);
 
-  final todoBloc = serviceLocator<TodoBloc>();
+  TodoBloc get _todoBloc => serviceLocator<TodoBloc>();
   final List<TodoTask> todoTasks;
 
   @override
   Widget build(BuildContext context) {
     if (todoTasks.isEmpty) {
-      return const Center(child: Text('No tasks'));
+      return const Center(
+        child: Text(
+          'No tasks',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      );
     }
     return RefreshIndicator(
-      onRefresh: () async => todoBloc.add(TodoList()),
+      onRefresh: () async => _todoBloc.add(TodoList()),
       child: ListView.builder(
         itemCount: todoTasks.length,
         itemBuilder: (context, index) {
@@ -102,10 +123,7 @@ class _LoadedStateWidget extends StatelessWidget {
           return ListTile(
             leading: Checkbox(
               value: todoTask.completed,
-              onChanged: (value) {
-                final task = todoTask.copyWith(completed: value);
-                todoBloc.add(TodoUpdated(task));
-              },
+              onChanged: (value) => _updateItem(todoTask, value),
             ),
             title: Text(todoTask.name),
             onLongPress: () => _deleteItem(context, todoTask),
@@ -113,6 +131,11 @@ class _LoadedStateWidget extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _updateItem(TodoTask todoTask, bool? value) {
+    final task = todoTask.copyWith(completed: value);
+    _todoBloc.add(TodoUpdated(task));
   }
 
   void _deleteItem(BuildContext context, TodoTask todoTask) {
@@ -130,8 +153,7 @@ class _LoadedStateWidget extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              // todoStore.deleteTask(todoTask);
-              todoBloc.add(TodoDeleted(todoTask));
+              _todoBloc.add(TodoDeleted(todoTask));
               context.pop();
             },
             child: const Text('Confirm'),
