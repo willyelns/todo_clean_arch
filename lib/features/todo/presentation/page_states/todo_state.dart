@@ -1,1 +1,1 @@
-enum TodoState { initial, loading, loaded, error, deleted, added }
+enum TodoState { initial, loading, loaded, error, deleted, added, empty }

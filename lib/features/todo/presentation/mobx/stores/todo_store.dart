@@ -121,7 +121,11 @@ abstract class _TodoStoreBase with Store {
     await listEither.open(successCallback: (list) {
       _todoTasks = list;
       todoTasks = _todoTasks;
-      todoState = TodoState.loaded;
+      if (todoTasks.isNotEmpty) {
+        todoState = TodoState.loaded;
+        return;
+      }
+      todoState = TodoState.empty;
     }, failureCallback: (failure) {
       todoState = TodoState.error;
     });
