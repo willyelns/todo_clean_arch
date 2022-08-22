@@ -7,6 +7,7 @@ enum AppPages {
   homeMobx,
   homeBloc,
   addTaskMobx,
+  addTaskBloc,
 }
 
 extension AppPagesExtension on AppPages {
@@ -20,6 +21,8 @@ extension AppPagesExtension on AppPages {
         return '/home_bloc';
       case AppPages.addTaskMobx:
         return '/add_task_mobx';
+      case AppPages.addTaskBloc:
+        return '/add_task_bloc';
     }
   }
 }

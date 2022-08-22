@@ -77,6 +77,7 @@ void init() {
       retrieveAllTasks: serviceLocator(),
       updateTodoTask: serviceLocator(),
       deleteTodoTask: serviceLocator(),
+      addTodoTask: serviceLocator(),
     ),
   );
   serviceLocator.registerLazySingleton<TodoStore>(
