@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
-import '../../../../../commons/extensions/mobx/mobx_extensions.dart';
 
+import '../../../../../commons/extensions/mobx/mobx_extensions.dart';
+import '../../../../../commons/extensions/theme/theme_context.dart';
 import '../../../../../injection_container.dart';
 import '../../../../../routes/app_pages.dart';
 import '../../../domain/entities/todo_task.dart';
@@ -17,31 +18,17 @@ class HomePageMobx extends StatefulWidget {
 }
 
 class _HomePageMobxState extends State<HomePageMobx> {
-  final todoStore = serviceLocator<TodoStore>();
+  final List<ReactionDisposer> _disposers = [];
 
-  List<ReactionDisposer> disposers = [];
-
-  Future<void> _addTask() async {
-    await context.push(AppPages.addTaskMobx);
-  }
+  TodoStore get _todoStore => serviceLocator<TodoStore>();
 
   @override
   void initState() {
     super.initState();
-    todoStore.retrieveAllTasks();
-    debugPrint('list: ${todoStore.todoTasks}');
+    _todoStore.retrieveAllTasks();
+    debugPrint('list: ${_todoStore.todoTasks}');
 
-    disposers.add(reaction((_) => todoStore.todoState, (state) {
-      if (state == TodoState.deleted) {
-        _showDeletedSnackBar(context);
-      }
-    }));
-
-    disposers.add(reaction((_) => todoStore.todoState, (state) {
-      if (state == TodoState.added) {
-        todoStore.todoState = TodoState.loaded;
-      }
-    }, delay: 500));
+    _setUpDisposers();
   }
 
   @override
@@ -52,7 +39,7 @@ class _HomePageMobxState extends State<HomePageMobx> {
       ),
       body: Observer(
         builder: (context) {
-          final state = todoStore.currentState;
+          final state = _todoStore.currentState;
 
           switch (state) {
             case TodoState.initial:
@@ -65,7 +52,7 @@ class _HomePageMobxState extends State<HomePageMobx> {
               return const _LoadedStateWidget();
             case TodoState.error:
               return _ErrorStateWidget(
-                errorMessage: todoStore.errorMessage,
+                errorMessage: _todoStore.errorMessage,
               );
           }
         },
@@ -78,49 +65,58 @@ class _HomePageMobxState extends State<HomePageMobx> {
     );
   }
 
-  void _showDeletedSnackBar(BuildContext context) {
-    final snackBar = SnackBar(
-      content: const Text('Task removed with success!'),
-      action: SnackBarAction(
-        label: 'OK',
-        onPressed: () {
-          // do something
-        },
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
   @override
   void dispose() {
-    disposers.disposeAll();
+    _disposers.disposeAll();
     super.dispose();
+  }
+
+  Future<void> _addTask() async {
+    await context.push(AppPages.addTaskMobx);
+  }
+
+  void _showDeletedSnackBar(BuildContext context) {
+    context.showSnackBar(title: 'Task removed with success!');
+  }
+
+  void _setUpDisposers() {
+    _disposers.add(reaction((_) => _todoStore.todoState, (state) {
+      if (state == TodoState.deleted) {
+        _showDeletedSnackBar(context);
+      }
+    }));
+
+    _disposers.add(reaction((_) => _todoStore.todoState, (state) {
+      if (state == TodoState.added) {
+        _todoStore.todoState = TodoState.loaded;
+      }
+    }, delay: 500));
   }
 }
 
 class _LoadedStateWidget extends StatelessWidget {
   const _LoadedStateWidget({Key? key}) : super(key: key);
 
-  TodoStore get todoStore => serviceLocator<TodoStore>();
-  List<TodoTask> get todoTasks => todoStore.todoTasks;
+  TodoStore get _todoStore => serviceLocator<TodoStore>();
+  List<TodoTask> get _todoTasks => _todoStore.todoTasks;
 
   @override
   Widget build(BuildContext context) {
-    if (todoTasks.isEmpty) {
+    if (_todoTasks.isEmpty) {
       return const Center(child: Text('No tasks'));
     }
     return RefreshIndicator(
-      onRefresh: todoStore.retrieveAllTasks,
+      onRefresh: _todoStore.retrieveAllTasks,
       child: ListView.builder(
-        itemCount: todoTasks.length,
+        itemCount: _todoTasks.length,
         itemBuilder: (context, index) {
-          final todoTask = todoTasks[index];
+          final todoTask = _todoTasks[index];
           return ListTile(
             leading: Checkbox(
               value: todoTask.completed,
               onChanged: (value) {
                 final task = todoTask.copyWith(completed: value);
-                todoStore.updateTodoTask(task);
+                _todoStore.updateTodoTask(task);
               },
             ),
             title: Text(todoTask.name),
@@ -146,7 +142,7 @@ class _LoadedStateWidget extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              todoStore.deleteTodoTask(todoTask);
+              _todoStore.deleteTodoTask(todoTask);
               context.pop();
             },
             child: const Text('Confirm'),
