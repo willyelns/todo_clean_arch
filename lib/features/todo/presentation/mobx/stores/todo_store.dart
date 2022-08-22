@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:mobx/mobx.dart';
+import '../../../../../commons/types/use_case_response.dart';
 
 import '../../../domain/entities/todo_task.dart';
 import '../../../domain/usecases/add_todo_task.dart';
@@ -74,21 +75,21 @@ abstract class _TodoStoreBase with Store {
 
   @action
   Future<void> updateTodoTask(TodoTask task) async {
-    final updateEither = await _updateTodoTask(task);
-    await updateEither.fold((_) async {
+    final updateEither = _updateTodoTask(task);
+    await await updateEither.open(successCallback: (_) async {
       await _loadTodoTasks();
-    }, (failure) {
+    }, failureCallback: (failure) {
       todoState = TodoState.error;
     });
   }
 
   @action
   Future<void> deleteTodoTask(TodoTask task) async {
-    final deleteEither = await _deleteTodoTask(task);
-    await deleteEither.fold((_) async {
+    final deleteEither = _deleteTodoTask(task);
+    await await deleteEither.open(successCallback: (_) async {
       await _loadTodoTasks();
       todoState = TodoState.deleted;
-    }, (failure) {
+    }, failureCallback: (failure) {
       todoState = TodoState.error;
     });
   }
@@ -109,12 +110,12 @@ abstract class _TodoStoreBase with Store {
 
   Future<void> _loadTodoTasks() async {
     todoState = TodoState.loading;
-    final listEither = await _retrieveAllTasks();
-    listEither.fold((list) {
+    final listEither = _retrieveAllTasks();
+    await listEither.open(successCallback: (list) {
       _todoTasks = list;
       todoTasks = _todoTasks;
       todoState = TodoState.loaded;
-    }, (failure) {
+    }, failureCallback: (failure) {
       todoState = TodoState.error;
     });
   }

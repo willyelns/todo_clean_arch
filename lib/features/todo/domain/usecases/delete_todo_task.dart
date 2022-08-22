@@ -1,10 +1,9 @@
-import 'package:dartz/dartz.dart';
-import '../../../../commons/errors/failures/failure.dart';
+import '../../../../commons/types/use_case_response.dart';
 import '../entities/todo_task.dart';
 import '../repositories/todo_repository.dart';
 
 abstract class DeleteTodoTask {
-  Future<Either<void, Failure>> call(TodoTask todoTask);
+  UseCaseResponse<void> call(TodoTask todoTask);
 }
 
 class DeleteTodoTaskImpl implements DeleteTodoTask {
@@ -13,7 +12,7 @@ class DeleteTodoTaskImpl implements DeleteTodoTask {
   final TodoRepository repository;
 
   @override
-  Future<Either<void, Failure>> call(TodoTask todoTask) async {
+  UseCaseResponse<void> call(TodoTask todoTask) async {
     return repository.deleteTodoTask(todoTask);
   }
 }

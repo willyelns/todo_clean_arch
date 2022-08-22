@@ -1,10 +1,9 @@
-import 'package:dartz/dartz.dart';
-import '../../../../commons/errors/failures/failure.dart';
+import '../../../../commons/types/use_case_response.dart';
 import '../entities/todo_task.dart';
 import '../repositories/todo_repository.dart';
 
 abstract class RetrieveAllTasks {
-  Future<Either<List<TodoTask>, Failure>> call();
+  UseCaseResponse<List<TodoTask>> call();
 }
 
 class RetrieveAllTasksImpl implements RetrieveAllTasks {
@@ -13,7 +12,7 @@ class RetrieveAllTasksImpl implements RetrieveAllTasks {
   final TodoRepository repository;
 
   @override
-  Future<Either<List<TodoTask>, Failure>> call() async {
+  UseCaseResponse<List<TodoTask>> call() async {
     return repository.retrieveAllTasks();
   }
 }

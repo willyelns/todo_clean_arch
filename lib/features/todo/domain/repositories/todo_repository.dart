@@ -1,10 +1,9 @@
-import 'package:dartz/dartz.dart';
-import '../../../../commons/errors/failures/failure.dart';
+import '../../../../commons/types/use_case_response.dart';
 import '../entities/todo_task.dart';
 
 abstract class TodoRepository {
-  Future<Either<List<TodoTask>, Failure>> retrieveAllTasks();
-  Future<Either<void, Failure>> updateTodoTask(TodoTask todoTask);
-  Future<Either<void, Failure>> deleteTodoTask(TodoTask todoTask);
-  Future<Either<void, Failure>> addTodoTask(TodoTask todoTask);
+  UseCaseResponse<List<TodoTask>> retrieveAllTasks();
+  UseCaseResponse<void> updateTodoTask(TodoTask todoTask);
+  UseCaseResponse<void> deleteTodoTask(TodoTask todoTask);
+  UseCaseResponse<void> addTodoTask(TodoTask todoTask);
 }

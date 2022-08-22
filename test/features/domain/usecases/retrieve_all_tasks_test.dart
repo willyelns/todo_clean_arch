@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:to_do/commons/errors/failures/cache_failure.dart';
+import 'package:to_do/commons/types/use_case_response.dart';
 import 'package:to_do/features/todo/domain/entities/todo_task.dart';
 import 'package:to_do/features/todo/domain/usecases/retrieve_all_tasks.dart';
 
@@ -26,12 +27,12 @@ void main() {
   test(
     'should retrieve a list with todo tasks from the call method',
     () async {
-      when(mockTodoRepository.retrieveAllTasks())
-          .thenAnswer((_) async => Left(todoTaskList));
+      when(mockTodoRepository.retrieveAllTasks()).thenAnswer(
+          (_) async => UseCaseResponseExtension.createSuccess(todoTaskList));
 
       final result = await sut.call();
 
-      expect(result, Left(todoTaskList));
+      expect(result, UseCaseResponseExtension.createSuccess(todoTaskList));
 
       verify(mockTodoRepository.retrieveAllTasks());
 
@@ -47,7 +48,8 @@ void main() {
 
       final result = await sut.call();
 
-      expect(result, const Right(CacheFailure()));
+      expect(
+          result, UseCaseResponseExtension.createFailure(const CacheFailure()));
 
       verify(mockTodoRepository.retrieveAllTasks());
 
