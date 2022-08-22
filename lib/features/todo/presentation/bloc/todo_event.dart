@@ -9,8 +9,8 @@ abstract class TodoEvent extends Equatable {
 
 class TodoList extends TodoEvent {}
 
-class TodoAdded extends TodoEvent {
-  const TodoAdded(this.todo);
+class TodoAdd extends TodoEvent {
+  const TodoAdd(this.todo);
 
   final TodoTask todo;
 

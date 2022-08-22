@@ -26,3 +26,5 @@ class TodoLoadedState extends TodoState {
 }
 
 class TodoFailureState extends TodoState {}
+
+class TodoAddedState extends TodoState {}
