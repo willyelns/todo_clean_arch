@@ -36,6 +36,11 @@ class HttpConfigService {
 
   void _addDefaultHeaders() {
     _dio.options.headers['Content-Type'] = 'application/json';
+    _dio.options.headers['X-Bin-Meta'] = false;
+    _dio.options.headers['X-Master-Key'] =
+        r'$2b$10$m9D6DPfB9mTuM5wFZFQ4Wu6NobDidn.WXZI8aY8ae3LD7Nk.hMsFe';
+    _dio.options.headers['X-Access-Key'] =
+        r'$2b$10$aH4PQJmtXVmMS8Zoh2la2ugGcnBDUs7OWUd0kUsEMnAtmMrxsJg1q';
   }
 
   void _addInterceptors() {
