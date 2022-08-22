@@ -4,7 +4,6 @@ import '../../data/models/todo_task_model.dart';
 
 part 'todo_retrofit_data_source.g.dart';
 
-@RestApi(baseUrl: 'http://localhost:3000/')
 abstract class TodoRetrofitDataSource {
   factory TodoRetrofitDataSource(Dio dio, {String? baseUrl}) =
       _TodoRetrofitDataSource;
