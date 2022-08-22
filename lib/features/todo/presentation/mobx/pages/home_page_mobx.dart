@@ -102,29 +102,38 @@ class _LoadedStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_todoTasks.isEmpty) {
-      return const Center(child: Text('No tasks'));
-    }
     return RefreshIndicator(
       onRefresh: _todoStore.retrieveAllTasks,
-      child: ListView.builder(
-        itemCount: _todoTasks.length,
-        itemBuilder: (context, index) {
-          final todoTask = _todoTasks[index];
-          return ListTile(
-            leading: Checkbox(
-              value: todoTask.completed,
-              onChanged: (value) {
-                final task = todoTask.copyWith(completed: value);
-                _todoStore.updateTodoTask(task);
-              },
+      child: Builder(builder: (context) {
+        if (_todoTasks.isEmpty) {
+          return const Center(
+            child: Text(
+              'No tasks',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            title: Text(todoTask.name),
-            onLongPress: () => _deleteItem(context, todoTask),
           );
-        },
-      ),
+        }
+        return ListView.builder(
+          itemCount: _todoTasks.length,
+          itemBuilder: (context, index) {
+            final todoTask = _todoTasks[index];
+            return ListTile(
+              leading: Checkbox(
+                value: todoTask.completed,
+                onChanged: (value) => _updateItem(todoTask, value),
+              ),
+              title: Text(todoTask.name),
+              onLongPress: () => _deleteItem(context, todoTask),
+            );
+          },
+        );
+      }),
     );
+  }
+
+  void _updateItem(TodoTask todoTask, bool? value) {
+    final task = todoTask.copyWith(completed: value);
+    _todoStore.updateTodoTask(task);
   }
 
   void _deleteItem(BuildContext context, TodoTask todoTask) {
@@ -176,7 +185,23 @@ class _LoadingStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: CircularProgressIndicator());
+    return Container(
+      padding: const EdgeInsets.only(top: 16),
+      child: ListView.builder(
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Container(
+                width: 300,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: Colors.grey[400],
+                ),
+              ),
+            );
+          }),
+    );
   }
 }
 
