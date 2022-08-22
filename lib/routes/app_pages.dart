@@ -4,6 +4,7 @@ import 'routes.dart';
 
 enum AppPages {
   home,
+  homeMobx,
   homeBloc,
   addTaskMobx,
 }
@@ -13,6 +14,8 @@ extension AppPagesExtension on AppPages {
     switch (this) {
       case AppPages.home:
         return '/';
+      case AppPages.homeMobx:
+        return '/home_mobx';
       case AppPages.homeBloc:
         return '/home_bloc';
       case AppPages.addTaskMobx:
