@@ -51,6 +51,14 @@ abstract class _TodoStoreBase with Store {
       ? 'This could not be completed, be try again later'
       : '';
 
+  int get _lastTodoId {
+    if (_todoTasks.isNotEmpty) {
+      final lastItem = _todoTasks.last;
+      return int.tryParse(lastItem.id) ?? 0;
+    }
+    return 0;
+  }
+
   // Action methods
   @action
   Future<void> retrieveAllTasks() async {
@@ -97,8 +105,7 @@ abstract class _TodoStoreBase with Store {
   TodoTask _createTaskToAdd() {
     final name = addTodoFormStore.name;
     final description = addTodoFormStore.description;
-    final lastId = int.parse(_todoTasks.last.id);
-    final id = lastId + 1;
+    final id = _lastTodoId + 1;
     final task = TodoTask(
       id: id.toString(),
       completed: false,
