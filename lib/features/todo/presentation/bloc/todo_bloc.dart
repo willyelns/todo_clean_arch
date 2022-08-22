@@ -25,9 +25,11 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   Stream<TodoState> mapEventToState(TodoEvent event) async* {
     if (event is TodoList) {
       yield* _mapTodoLoadedToState();
-    } else if (event is TodoUpdated) {
+    }
+    if (event is TodoUpdated) {
       yield* _mapTodoUpdatedToState(event);
-    } else if (event is TodoDeleted) {
+    }
+    if (event is TodoDeleted) {
       yield* _mapTodoDeletedToState(event);
     }
   }

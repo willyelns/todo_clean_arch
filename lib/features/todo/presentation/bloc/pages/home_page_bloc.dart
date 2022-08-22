@@ -36,6 +36,7 @@ class _HomePageBlocState extends State<HomePageBloc> {
             ),
             body: LayoutBuilder(
               builder: (context, constraints) {
+                debugPrint('STATE: $state');
                 if (state is TodoDeletedState) {
                   _showDeletedSnackBar(context);
                 }
