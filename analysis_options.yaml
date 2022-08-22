@@ -30,7 +30,6 @@ linter:
     - prefer_relative_imports
     - type_annotate_public_apis
     - unnecessary_lambdas
-    - use_setters_to_change_properties
     - use_to_and_as_if_applicable
 
     # FLUTTER ANALYZE

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import '../../../../../commons/extensions/mobx/mobx_extensions.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../../routes/app_pages.dart';
@@ -92,10 +93,7 @@ class _HomePageMobxState extends State<HomePageMobx> {
 
   @override
   void dispose() {
-    // TODO: CREATE DISPOSE.ALL()
-    disposers.forEach((element) {
-      element.reaction.dispose();
-    });
+    disposers.disposeAll();
     super.dispose();
   }
 }

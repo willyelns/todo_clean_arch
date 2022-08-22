@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
+import '../../../../../commons/extensions/mobx/mobx_extensions.dart';
 
 import '../../../../../injection_container.dart';
 import '../../../../../routes/app_pages.dart';
@@ -35,8 +36,7 @@ class _AddTaskPageMobxState extends State<AddTaskPageMobx> {
 
   @override
   void dispose() {
-    //TODO ADD A
-    disposer.reaction.dispose();
+    disposer.dispose();
     super.dispose();
   }
 

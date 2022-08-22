@@ -40,3 +40,21 @@ extension MobxFunctionExtension on Function {
   // e.g : instead of using var computedName = Computed(function) | var computedName = function.computed
   Computed get computed => Computed(this as dynamic Function());
 }
+
+extension MobxListReactionExtension on List<ReactionDisposer> {
+  void disposeAll() {
+    for (final disposer in this) {
+      disposer();
+    }
+  }
+}
+
+extension MobxReactionDisposerExtension on ReactionDisposer {
+  void dispose() {
+    final reactionDisposer = this;
+
+    final reaction = reactionDisposer.reaction;
+
+    reaction.dispose();
+  }
+}
