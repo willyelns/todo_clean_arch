@@ -17,8 +17,6 @@ class HomePageBloc extends StatefulWidget {
 class _HomePageBlocState extends State<HomePageBloc> {
   TodoBloc get _todoBloc => serviceLocator<TodoBloc>();
 
-  Future<void> _addTask() async {}
-
   @override
   void initState() {
     super.initState();
@@ -29,7 +27,12 @@ class _HomePageBlocState extends State<HomePageBloc> {
   Widget build(BuildContext context) {
     return BlocProvider<TodoBloc>(
       create: (context) => _todoBloc,
-      child: BlocBuilder<TodoBloc, TodoState>(
+      child: BlocConsumer<TodoBloc, TodoState>(
+        listener: (context, state) {
+          if (state is TodoDeletedState) {
+            _showDeletedSnackBar(context);
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
@@ -37,9 +40,6 @@ class _HomePageBlocState extends State<HomePageBloc> {
             ),
             body: LayoutBuilder(
               builder: (context, constraints) {
-                if (state is TodoDeletedState) {
-                  _showDeletedSnackBar(context);
-                }
                 if (state is TodoLoadingState) {
                   return const _LoadingStateWidget();
                 }
@@ -67,6 +67,10 @@ class _HomePageBlocState extends State<HomePageBloc> {
 
   void _showDeletedSnackBar(BuildContext context) {
     context.showSnackBar(title: 'Task removed with success!');
+  }
+
+  Future<void> _addTask() async {
+    await context.push(AppPages.addTaskBloc);
   }
 }
 
