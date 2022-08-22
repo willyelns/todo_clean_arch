@@ -29,6 +29,8 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final DeleteTodoTask _deleteTodoTask;
   final AddTodoTask _addTodoTask;
 
+  List<TodoTask> _todoTasks = [];
+
   @override
   Stream<TodoState> mapEventToState(TodoEvent event) async* {
     if (event is TodoList) {
@@ -76,7 +78,9 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   Stream<TodoState> _mapTodoAddToState(TodoAdd event) async* {
     if (state is TodoLoadedState) {
-      final task = event.todo;
+      final name = event.name;
+      final description = event.description;
+      final task = _createTask(name, description);
       final addedEither = await _addTodoTask(task);
       yield* addedEither.fold((_) async* {
         yield TodoAddedState();
@@ -87,10 +91,29 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     }
   }
 
+  TodoTask _createTask(String name, String? description) {
+    // ignore: omit_local_variable_types
+    int id = 0;
+    if (_todoTasks.isNotEmpty) {
+      final lastItem = _todoTasks.last;
+      final stringId = lastItem.id;
+      final lastId = int.tryParse(stringId) ?? 0;
+      id = lastId + 1;
+    }
+
+    return TodoTask(
+      name: name,
+      description: description,
+      id: id.toString(),
+      completed: false,
+    );
+  }
+
   Stream<TodoState> _listAll() async* {
     yield TodoLoadingState();
     final either = await _retrieveAllTasks();
     yield* either.fold((list) async* {
+      _todoTasks = list;
       yield TodoLoadedState(list);
     }, (failure) async* {
       yield TodoFailureState();
